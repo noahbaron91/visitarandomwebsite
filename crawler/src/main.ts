@@ -106,6 +106,7 @@ const isEmpty = await requestQueue.isEmpty();
 console.log('Queue is empty:', isEmpty);
 
 if (isEmpty) {
+  console.log('Starting with seed URLs');
   await crawler.run(['https://www.blogs-collection.com/']);
 } else {
   await crawler.run();
