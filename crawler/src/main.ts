@@ -60,6 +60,20 @@ const socialMediaDomains = [
   'reddit.com',
 ];
 
+// Block any adult content
+const blockedWords = [
+  'casino',
+  'gambling',
+  'bet',
+  'poker',
+  'slots',
+  'sex',
+  'porn',
+  'xxx',
+  'adult',
+  'nude',
+];
+
 const crawler = new PlaywrightCrawler({
   requestQueue,
   maxConcurrency: 5,
@@ -82,7 +96,8 @@ const crawler = new PlaywrightCrawler({
 
     const safeLinksToSave = externalLinks.filter(
       (link: string) =>
-        !socialMediaDomains.some((domain) => link.includes(domain))
+        !socialMediaDomains.some((domain) => link.includes(domain)) &&
+        !blockedWords.some((word) => link.includes(word))
     );
 
     safeLinksToSave.forEach((link) => {
@@ -94,7 +109,10 @@ const crawler = new PlaywrightCrawler({
     });
 
     const safeLinksToCrawl = links.filter((link) => {
-      return !socialMediaDomains.some((domain) => link.includes(domain));
+      return (
+        !socialMediaDomains.some((domain) => link.includes(domain)) &&
+        !blockedWords.some((word) => link.includes(word))
+      );
     });
 
     await enqueueLinks({ urls: safeLinksToCrawl });
