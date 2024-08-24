@@ -76,7 +76,6 @@ const blockedWords = [
 
 const crawler = new PlaywrightCrawler({
   requestQueue,
-  maxConcurrency: 15,
   maxRequestRetries: 3,
   errorHandler: async (error) => {
     console.error('Error:', error);
