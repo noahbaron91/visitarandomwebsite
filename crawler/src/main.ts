@@ -84,7 +84,7 @@ const crawler = new PlaywrightCrawler({
     //   return !blockedDomains.some((domain) => link.includes(domain));
     // });
 
-    await enqueueLinks({ urls: externalLinks });
+    await enqueueLinks({ urls: links });
   },
 });
 
