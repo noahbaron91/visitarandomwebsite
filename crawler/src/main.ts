@@ -48,6 +48,18 @@ const requestQueue = await RequestQueue.open(null, {
 
 const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
 
+const socialMediaDomains = [
+  'facebook.com',
+  'twitter.com',
+  'linkedin.com',
+  'instagram.com',
+  'pinterest.com',
+  'youtube.com',
+  'tiktok.com',
+  'snapchat.com',
+  'reddit.com',
+];
+
 const crawler = new PlaywrightCrawler({
   requestQueue,
   maxConcurrency: 5,
@@ -68,11 +80,12 @@ const crawler = new PlaywrightCrawler({
       (link: string) => !link.includes('blogs-collection.com')
     );
 
-    // const safeLinksToSave = externalLinks.filter(
-    //   (link: string) => !blockedDomains.some((domain) => link.includes(domain))
-    // );
+    const safeLinksToSave = externalLinks.filter(
+      (link: string) =>
+        !socialMediaDomains.some((domain) => link.includes(domain))
+    );
 
-    externalLinks.forEach((link) => {
+    safeLinksToSave.forEach((link) => {
       statement.run(link, (err) => {
         if (err) {
           console.error('Error inserting link into SQLite:', err.message);
@@ -80,11 +93,11 @@ const crawler = new PlaywrightCrawler({
       });
     });
 
-    // const safeLinksToCrawl = links.filter((link) => {
-    //   return !blockedDomains.some((domain) => link.includes(domain));
-    // });
+    const safeLinksToCrawl = links.filter((link) => {
+      return !socialMediaDomains.some((domain) => link.includes(domain));
+    });
 
-    await enqueueLinks({ urls: links });
+    await enqueueLinks({ urls: safeLinksToCrawl });
   },
 });
 
