@@ -13,7 +13,7 @@ const db = new sqlite3.Database('crawler.db', (err) => {
   console.log('Connected to the SQLite database.');
 });
 
-let blockedDomains = [];
+let blockedDomains: string[] = [];
 
 // Download and save txt files of banned domains
 // From: https://blocklistproject.github.io/Lists/
@@ -50,7 +50,7 @@ const crawler = new PlaywrightCrawler({
   requestQueue,
   maxConcurrency: 5,
   maxRequestRetries: 3,
-  async requestHandler({ _, page, enqueueLinks }) {
+  async requestHandler({ page, enqueueLinks }) {
     console.log('Processing:', page.url());
 
     const links = await page.$$eval('a', (anchors) =>
@@ -60,27 +60,20 @@ const crawler = new PlaywrightCrawler({
     console.log('Links found:', links.length);
 
     const externalLinks = links.filter(
-      (link) => !link.includes('blogs-collection.com')
+      (link: string) => !link.includes('blogs-collection.com')
     );
 
     const safeLinksToSave = externalLinks.filter(
-      (link) => !blockedDomains.some((domain) => link.includes(domain))
+      (link: string) => !blockedDomains.some((domain) => link.includes(domain))
     );
-
-    const safeLinksToSaveWithIsHome = safeLinksToSave.map((link) => {
-      const url = new URL(link);
-      const isHome = url.pathname === '/';
-
-      return { url: link, is_home: isHome };
-    });
 
     db.serialize(() => {
       const statement = db.prepare(
-        'INSERT OR IGNORE INTO page (url, is_home) VALUES (?, ?)'
+        'INSERT OR IGNORE INTO page (url) VALUES (?)'
       );
 
-      safeLinksToSaveWithIsHome.forEach((link) => {
-        statement.run(link.url, link.is_home);
+      safeLinksToSave.forEach((link) => {
+        statement.run(link);
       });
 
       statement.finalize();
