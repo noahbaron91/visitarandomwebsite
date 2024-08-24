@@ -46,6 +46,8 @@ const requestQueue = await RequestQueue.open(null, {
   storageClient: memoryStorage,
 });
 
+const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
+
 const crawler = new PlaywrightCrawler({
   requestQueue,
   maxConcurrency: 5,
@@ -66,44 +68,40 @@ const crawler = new PlaywrightCrawler({
       (link: string) => !link.includes('blogs-collection.com')
     );
 
-    const safeLinksToSave = externalLinks.filter(
-      (link: string) => !blockedDomains.some((domain) => link.includes(domain))
-    );
+    // const safeLinksToSave = externalLinks.filter(
+    //   (link: string) => !blockedDomains.some((domain) => link.includes(domain))
+    // );
 
-    db.serialize(() => {
-      const statement = db.prepare(
-        'INSERT OR IGNORE INTO page (url) VALUES (?)'
-      );
-
-      safeLinksToSave.forEach((link) => {
-        statement.run(link);
+    externalLinks.forEach((link) => {
+      statement.run(link, (err) => {
+        if (err) {
+          console.error('Error inserting link into SQLite:', err.message);
+        }
       });
-
-      statement.finalize();
     });
 
-    const safeLinksToCrawl = links.filter((link) => {
-      return !blockedDomains.some((domain) => link.includes(domain));
-    });
+    // const safeLinksToCrawl = links.filter((link) => {
+    //   return !blockedDomains.some((domain) => link.includes(domain));
+    // });
 
-    await enqueueLinks({ urls: safeLinksToCrawl });
+    await enqueueLinks({ urls: externalLinks });
   },
 });
 
-await downloadBlockList();
+// await downloadBlockList();
 
-const blockListFile = fs.readFileSync('block-list.txt', 'utf-8');
-const lines = blockListFile.trim().split('\n');
+// const blockListFile = fs.readFileSync('block-list.txt', 'utf-8');
+// const lines = blockListFile.trim().split('\n');
 
-const linesWithoutComments = lines.filter((line) => !line.startsWith('#'));
+// const linesWithoutComments = lines.filter((line) => !line.startsWith('#'));
 
 // Extract blocked domains from the block list
-const blockedDomainsWithDuplicates = linesWithoutComments.map((line) => {
-  // Split each line by space and take the second part (domain)
-  return line.split(' ')[1];
-});
+// const blockedDomainsWithDuplicates = linesWithoutComments.map((line) => {
+//   // Split each line by space and take the second part (domain)
+//   return line.split(' ')[1];
+// });
 
-blockedDomains = [...new Set(blockedDomainsWithDuplicates)];
+// blockedDomains = [...new Set(blockedDomainsWithDuplicates)];
 
 const isEmpty = await requestQueue.isEmpty();
 console.log('Queue is empty:', isEmpty);
@@ -114,3 +112,12 @@ if (isEmpty) {
 } else {
   await crawler.run();
 }
+
+statement.finalize();
+db.close((err) => {
+  if (err) {
+    console.error('Error closing database', err);
+  } else {
+    console.log('Database closed.');
+  }
+});
