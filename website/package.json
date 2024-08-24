@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "website",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -7,7 +7,8 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "dev:wrangler": "npx wrangler pages dev ./dist --compatibility-flags=\"nodejs_compat\""
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
