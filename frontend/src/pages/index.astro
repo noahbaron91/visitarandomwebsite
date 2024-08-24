@@ -1,5 +1,6 @@
 ---
-
+import { VisitARandomHomePage } from '../components/VisitARandomHomePage';
+import { VisitARandomPage } from '../components/VisitARandomPage';
 ---
 
 <html lang='en'>
@@ -11,6 +12,30 @@
     <title>Visit A Random Site</title>
   </head>
   <body>
-    <h1>Visit a random website</h1>
+    <div>
+      <h1>
+        96.55% of pages receive no organic search traffic from Google
+        <br />
+        Visit a random website on the internet & learn something new
+      </h1>
+      <div class='buttons-wrapper'>
+        <VisitARandomHomePage />
+        <VisitARandomPage />
+      </div>
+      <p>over 10,000,000 pages indexed</p>
+    </div>
   </body>
 </html>
+
+<style>
+  .buttons-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  button {
+    border-radius: 8px;
+    padding: 26px 18px;
+  }
+</style>

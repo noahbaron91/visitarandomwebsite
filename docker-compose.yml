@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    image: python:3.10
+    container_name: my_app
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python app.py
+    ports:
+      - '8000:8000'
+    environment:
+      - FLASK_ENV=development
+    depends_on:
+      - sqlite
+
+  sqlite:
+    image: nouchka/sqlite
+    container_name: sqlite
+    volumes:
+      - sqlite_data:/sqlite
+    command: sqlite3 /sqlite/my_database.db
+
+volumes:
+  sqlite_data:
