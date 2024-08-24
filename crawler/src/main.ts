@@ -50,6 +50,9 @@ const crawler = new PlaywrightCrawler({
   requestQueue,
   maxConcurrency: 5,
   maxRequestRetries: 3,
+  errorHandler: async (error) => {
+    console.error('Error:', error);
+  },
   async requestHandler({ page, enqueueLinks }) {
     console.log('Processing:', page.url());
 
