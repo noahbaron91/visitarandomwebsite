@@ -46,8 +46,6 @@ const requestQueue = await RequestQueue.open(null, {
   storageClient: memoryStorage,
 });
 
-const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
-
 const socialMediaDomains = [
   'facebook.com',
   'twitter.com',
@@ -99,12 +97,20 @@ const crawler = new PlaywrightCrawler({
         !blockedWords.some((word) => link.includes(word))
     );
 
-    safeLinksToSave.forEach((link) => {
-      statement.run(link, (err) => {
-        if (err) {
-          console.error('Error inserting link into SQLite:', err.message);
-        }
+    db.serialize(() => {
+      const statement = db.prepare(
+        'INSERT OR IGNORE INTO page (url) VALUES (?)'
+      );
+
+      safeLinksToSave.forEach((link) => {
+        statement.run(link, (err) => {
+          if (err) {
+            console.error('Error inserting link into SQLite:', err.message);
+          }
+        });
       });
+
+      statement.finalize();
     });
 
     const safeLinksToCrawl = links.filter((link) => {
@@ -143,7 +149,6 @@ if (isEmpty) {
   await crawler.run();
 }
 
-statement.finalize();
 db.close((err) => {
   if (err) {
     console.error('Error closing database', err);
