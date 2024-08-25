@@ -1,15 +1,9 @@
-import {
-  PlaywrightCrawler,
-  RequestQueue,
-  CheerioCrawler,
-  enqueueLinks,
-} from 'crawlee';
+import { RequestQueue, CheerioCrawler } from 'crawlee';
 
 import fs from 'fs';
 import https from 'https';
 import sqlite3 from 'sqlite3';
 import { MemoryStorage } from '@crawlee/memory-storage';
-import { url } from 'inspector';
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
