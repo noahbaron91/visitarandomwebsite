@@ -1,8 +1,15 @@
-import { PlaywrightCrawler, RequestQueue } from 'crawlee';
+import {
+  PlaywrightCrawler,
+  RequestQueue,
+  CheerioCrawler,
+  enqueueLinks,
+} from 'crawlee';
+
 import fs from 'fs';
 import https from 'https';
 import sqlite3 from 'sqlite3';
 import { MemoryStorage } from '@crawlee/memory-storage';
+import { url } from 'inspector';
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
@@ -74,32 +81,44 @@ const blockedWords = [
   'nude',
 ];
 
-const crawler = new PlaywrightCrawler({
+function isValidUrl(url: string) {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    console.log('invalid URL:', url);
+    return false;
+  }
+}
+
+const crawler = new CheerioCrawler({
   requestQueue,
   maxRequestRetries: 3,
-  errorHandler: async (error) => {
-    console.error('Error:', error);
-  },
-  async requestHandler({ page, enqueueLinks }) {
-    console.log('Processing:', page.url());
+  async requestHandler({ $, request }) {
+    console.log('Crawling:', request.loadedUrl);
 
-    const links = await page.$$eval('a', (anchors) =>
-      anchors.map((anchor) => anchor.href)
-    );
+    const links = $('a[href]')
+      .map((_, el) => $(el).attr('href'))
+      .get()
+      .map((link) => {
+        return new URL(link, request.loadedUrl).href;
+      })
+      .filter(isValidUrl);
 
-    console.log('Links found:', links.length);
+    const safeLinks = links.filter((link) => {
+      return (
+        !socialMediaDomains.some((domain) => link.includes(domain)) &&
+        !blockedWords.some((word) => link.includes(word))
+      );
+    });
 
-    const externalLinks = links.filter(
+    const externalLinks = safeLinks.filter(
       (link: string) => !link.includes('blogs-collection.com')
     );
 
-    const safeLinksToSave = externalLinks.filter(
-      (link: string) =>
-        !socialMediaDomains.some((domain) => link.includes(domain)) &&
-        !blockedWords.some((word) => link.includes(word))
-    );
+    console.log('External links:', externalLinks.length);
 
-    safeLinksToSave.forEach((link) => {
+    externalLinks.forEach((link) => {
       statement.run(link, (err) => {
         if (err) {
           console.error('Error inserting link into SQLite:', err.message);
@@ -107,14 +126,7 @@ const crawler = new PlaywrightCrawler({
       });
     });
 
-    const safeLinksToCrawl = links.filter((link) => {
-      return (
-        !socialMediaDomains.some((domain) => link.includes(domain)) &&
-        !blockedWords.some((word) => link.includes(word))
-      );
-    });
-
-    await crawler.addRequests(safeLinksToCrawl);
+    await crawler.addRequests(safeLinks);
   },
 });
 
