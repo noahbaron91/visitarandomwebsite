@@ -1,6 +1,7 @@
 ---
-import { VisitARandomHomePage } from '../components/VisitARandomHomePage';
-import { VisitARandomPage } from '../components/VisitARandomPage';
+import { App } from '../components/App';
+import '@fontsource/aileron';
+import '../style.css';
 ---
 
 <html lang='en'>
@@ -9,33 +10,11 @@ import { VisitARandomPage } from '../components/VisitARandomPage';
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
-    <title>Visit A Random Site</title>
+    <title>Visit A Random Website</title>
   </head>
   <body>
-    <div>
-      <h1>
-        96.55% of pages receive no organic search traffic from Google
-        <br />
-        Visit a random website on the internet & learn something new
-      </h1>
-      <div class='buttons-wrapper'>
-        <VisitARandomHomePage client:load />
-        <VisitARandomPage client:load />
-      </div>
-      <p>over 10,000,000 pages indexed</p>
-    </div>
+    <App />
   </body>
 </html>
 
-<style>
-  .buttons-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  button {
-    border-radius: 8px;
-    padding: 26px 18px;
-  }
-</style>
+<style></style>

@@ -14,12 +14,15 @@
     "@astrojs/check": "^0.9.3",
     "@astrojs/cloudflare": "^11.0.4",
     "@astrojs/react": "^3.6.2",
+    "@astrojs/tailwind": "^5.1.0",
+    "@fontsource/aileron": "^5.0.11",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "astro": "^4.14.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sqlite3": "^5.1.7",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4"
   }
 }
