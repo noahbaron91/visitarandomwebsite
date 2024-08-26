@@ -10,3 +10,6 @@ block-list.txt
 
 # SQLite dump files
 dumps/*
+
+crawler.db-shm
+crawler.db-wal

@@ -1,6 +1,12 @@
 import { RequestQueue, CheerioCrawler } from 'crawlee';
 
 import sqlite3 from 'sqlite3';
+import fs from 'fs';
+
+// We use a config.json so it's easier to change the domain we want to start crawling from
+const initialDomain = JSON.parse(
+  fs.readFileSync('./config.json', 'utf8')
+).domain;
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
@@ -102,7 +108,7 @@ console.log('isEmpty:', process.env.CRAWLEE_PURGE_ON_START);
 
 if (isEmpty) {
   console.log('Starting with seed URLs');
-  await crawler.run(['https://www.blogs-collection.com/']);
+  await crawler.run([`https://${initialDomain}`]);
 } else {
   console.log('Resuming from the queue');
   await crawler.run();
