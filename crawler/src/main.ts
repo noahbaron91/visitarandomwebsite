@@ -1,9 +1,6 @@
 import { RequestQueue, CheerioCrawler } from 'crawlee';
 
-import fs from 'fs';
-import https from 'https';
 import sqlite3 from 'sqlite3';
-import { MemoryStorage } from '@crawlee/memory-storage';
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
@@ -14,29 +11,6 @@ const db = new sqlite3.Database('crawler.db', (err) => {
   console.log('Connected to the SQLite database.');
 });
 
-let blockedDomains: string[] = [];
-
-// Download and save txt files of banned domains
-// From: https://blocklistproject.github.io/Lists/
-const downloadBlockList = (): Promise<void> => {
-  const file = fs.createWriteStream('block-list.txt');
-
-  const promise = new Promise<void>((resolve) => {
-    https.get(
-      'https://blocklistproject.github.io/Lists/everything.txt',
-      (response) => {
-        response.pipe(file);
-        file.on('finish', () => {
-          console.log('Download Completed');
-          file.close();
-          resolve();
-        });
-      }
-    );
-  });
-
-  return promise;
-};
 console.log('Opening request queue');
 const requestQueue = await RequestQueue.open();
 console.log('Preparing statement');
@@ -119,24 +93,6 @@ const crawler = new CheerioCrawler({
     await crawler.addRequests(safeLinks);
   },
 });
-
-// await downloadBlockList();
-
-// const blockListFile = fs.readFileSync('block-list.txt', 'utf-8');
-// const lines = blockListFile.trim().split('\n');
-
-// const linesWithoutComments = lines.filter((line) => !line.startsWith('#'));
-
-// Extract blocked domains from the block list
-// const blockedDomainsWithDuplicates = linesWithoutComments.map((line) => {
-//   // Split each line by space and take the second part (domain)
-//   return line.split(' ')[1];
-// });
-
-// blockedDomains = [...new Set(blockedDomainsWithDuplicates)];
-
-// const isEmpty = await requestQueue.isEmpty();
-// console.log('Queue is empty:', isEmpty);
 
 console.log('Request queue len', requestQueue.getTotalCount());
 
