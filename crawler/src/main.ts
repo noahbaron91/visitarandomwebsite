@@ -37,9 +37,9 @@ const downloadBlockList = (): Promise<void> => {
 
   return promise;
 };
-
+console.log('Opening request queue');
 const requestQueue = await RequestQueue.open();
-
+console.log('Preparing statement');
 const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
 
 const socialMediaDomains = [
@@ -137,6 +137,8 @@ const crawler = new CheerioCrawler({
 
 // const isEmpty = await requestQueue.isEmpty();
 // console.log('Queue is empty:', isEmpty);
+
+console.log('Request queue len', requestQueue.getTotalCount());
 
 const isEmpty = process.env.CRAWLEE_PURGE_ON_START !== '0';
 
