@@ -137,7 +137,7 @@ const crawler = new CheerioCrawler({
 
 const isEmpty = process.env.CRAWLEE_PURGE_ON_START !== '0';
 
-console.log(process.env.CRAWLEE_PURGE_ON_START);
+console.log('isEmpty:', process.env.CRAWLEE_PURGE_ON_START);
 
 if (isEmpty) {
   console.log('Starting with seed URLs');
