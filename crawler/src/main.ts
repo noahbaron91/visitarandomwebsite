@@ -38,14 +38,7 @@ const downloadBlockList = (): Promise<void> => {
   return promise;
 };
 
-const memoryStorage = new MemoryStorage({
-  persistStorage: true,
-  writeMetadata: false,
-});
-
-const requestQueue = await RequestQueue.open(null, {
-  storageClient: memoryStorage,
-});
+const requestQueue = await RequestQueue.open();
 
 const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
 
@@ -139,13 +132,18 @@ const crawler = new CheerioCrawler({
 
 // blockedDomains = [...new Set(blockedDomainsWithDuplicates)];
 
-const isEmpty = await requestQueue.isEmpty();
-console.log('Queue is empty:', isEmpty);
+// const isEmpty = await requestQueue.isEmpty();
+// console.log('Queue is empty:', isEmpty);
+
+const isEmpty = process.env.CRAWLEE_PURGE_ON_START !== '0';
+
+console.log(process.env.CRAWLEE_PURGE_ON_START);
 
 if (isEmpty) {
   console.log('Starting with seed URLs');
   await crawler.run(['https://www.blogs-collection.com/']);
 } else {
+  console.log('Resuming from the queue');
   await crawler.run();
 }
 

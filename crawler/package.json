@@ -19,6 +19,7 @@
     "start:clear": "CRAWLEE_PURGE_ON_START=1 npm run start:dev",
     "start": "CRAWLEE_PURGE_ON_START=0 npm run start:dev",
     "start:prod": "CRAWLEE_PURGE_ON_START=0 node dist/main.js",
+    "start:prod:clear": "CRAWLEE_PURGE_ON_START=1 node dist/main.js",
     "start:dev": "tsx src/main.ts",
     "build": "tsc"
   },
