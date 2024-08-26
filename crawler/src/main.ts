@@ -81,8 +81,11 @@ function isValidUrl(url: string) {
 const crawler = new CheerioCrawler({
   requestQueue,
   maxRequestRetries: 3,
+  errorHandler: (error) => {
+    console.error('Error:', error);
+  },
   async requestHandler({ $, request }) {
-    // console.log('Crawling:', request.loadedUrl);
+    console.log('Crawling:', request.loadedUrl);
 
     const links = $('a[href]')
       .map((_, el) => $(el).attr('href'))
@@ -103,7 +106,7 @@ const crawler = new CheerioCrawler({
       (link: string) => !link.includes('blogs-collection.com')
     );
 
-    // console.log('External links:', externalLinks.length);
+    console.log('External links:', externalLinks.length);
 
     externalLinks.forEach((link) => {
       statement.run(link, (err) => {
