@@ -32,6 +32,7 @@ const socialMediaDomains = [
   'tiktok.com',
   'snapchat.com',
   'reddit.com',
+  'x.com',
 ];
 
 // Block any adult content
