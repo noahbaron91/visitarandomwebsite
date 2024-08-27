@@ -4,9 +4,10 @@ import sqlite3 from 'sqlite3';
 import fs from 'fs';
 
 // We use a config.json so it's easier to change the domain we want to start crawling from
-const initialDomain = JSON.parse(
-  fs.readFileSync('./config.json', 'utf8')
-).domain;
+const config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+
+const startingDomain = config.domain;
+const stratingURL = config.startingURL;
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
@@ -84,7 +85,7 @@ const crawler = new CheerioCrawler({
     });
 
     const externalLinks = safeLinks.filter(
-      (link: string) => !link.includes('blogs-collection.com')
+      (link: string) => !link.includes(startingDomain)
     );
 
     console.log('External links:', externalLinks.length);
@@ -109,7 +110,7 @@ console.log('isEmpty:', process.env.CRAWLEE_PURGE_ON_START);
 
 if (isEmpty) {
   console.log('Starting with seed URLs');
-  await crawler.run([`https://${initialDomain}`]);
+  await crawler.run([stratingURL]);
 } else {
   console.log('Resuming from the queue');
   await crawler.run();
