@@ -13,3 +13,5 @@ dumps/*
 
 crawler.db-shm
 crawler.db-wal
+
+config.json
