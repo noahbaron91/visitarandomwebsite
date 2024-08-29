@@ -36,6 +36,7 @@ const socialMediaDomains = [
   'x.com',
   'threads.net',
   'bsky.app',
+  'pinterest.com',
 ];
 
 // Block any adult content
