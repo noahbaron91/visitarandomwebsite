@@ -34,6 +34,8 @@ const socialMediaDomains = [
   'snapchat.com',
   'reddit.com',
   'x.com',
+  'threads.net',
+  'bsky.app',
 ];
 
 // Block any adult content
