@@ -2,7 +2,7 @@
 import '@fontsource/aileron';
 import '../style.css';
 import '@fontsource/fredoka-one';
-import { TextComponents } from '../components/TextComponents';
+import { App } from '../components/App';
 ---
 
 <html lang='en'>
@@ -14,25 +14,7 @@ import { TextComponents } from '../components/TextComponents';
     <title>Visit A Random Website</title>
   </head>
   <body>
-    <div
-      class='fixed z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-balance flex flex-col items-center gap-9'
-    >
-      <div class='text-4xl font-bold flex w-[950px] flex-col text-center gap-6'>
-        <h1>96.55% of pages receive no organic search traffic from Google</h1>
-        <h1>Visit a random website on the internet and learn something new</h1>
-      </div>
-      <div class='flex flex-col gap-3 items-center'>
-        <button
-          type='button'
-          class='hover:bg-accent pointer-events-auto py-3 px-9 text-2xl bg-gray-900 rounded-lg border border-gray-700'
-        >
-          Visit a random website
-        </button>
-        <p class='text-gray-400'>over 7,500,000 pages indexed</p>
-      </div>
-    </div>
-    <TextComponents />
-
+    <App client:only='react' />
     <style></style>
   </body>
 </html>
