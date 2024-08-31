@@ -119,20 +119,22 @@ export function FindURL() {
                   'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
               }}
             />
-            <p className='text-3xl'>google.com</p>
-            <p className='text-3xl'>thisisit.com</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>google.com</p>
-            <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
-            <p className='text-3xl'>coursera.org</p>
+            <div className='flex flex-col' style={{ marginTop: -150 }}>
+              <p className='text-3xl'>google.com</p>
+              <p className='text-3xl'>thisisit.com</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>google.com</p>
+              <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+              <p className='text-3xl'>coursera.org</p>
+            </div>
           </div>
         </div>
       </div>
