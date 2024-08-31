@@ -47,12 +47,13 @@ export function Footer() {
       </a>
       <Dialog.Root>
         <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 z-40' />
-        <Dialog.Content className='flex flex-col gap-3 p-6 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-lg border border-gray-900'>
-          <Dialog.Title className='text-3xl text-white'>Im glad!</Dialog.Title>
+        <Dialog.Content className='flex flex-col gap-3 p-6 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-3xl border border-gray-900'>
+          <Dialog.Title className='text-3xl text-white'>
+            I{"'"}m glad!
+          </Dialog.Title>
           <Dialog.Description asChild>
             <div className='flex gap-3 flex-col'>
               <p>You can view a list of my projects on nbaron.com</p>
-
               <p>
                 If you want to fund my future ideas or show your appreciation
                 for my work{' '}
