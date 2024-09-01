@@ -84,67 +84,69 @@ function ScrollAnimation() {
   );
 
   return (
-    <div
-      ref={ref}
-      className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative'
-    >
+    <div className='relative'>
       <div
-        className='absolute top-0 left-0 right-0 bottom-0'
+        className='absolute top-0 left-0 right-0 bottom-0 z-10'
         style={{
           background:
             'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
         }}
       />
-      <p className='text-3xl'>google.com</p>
-      <p className='text-3xl'>thisisit.com</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>google.com</p>
-      <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
-      <p className='text-3xl'>coursera.org</p>
+      <div
+        ref={ref}
+        className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative'
+      >
+        <p className='text-3xl'>google.com</p>
+        <p className='text-3xl'>thisisit.com</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>google.com</p>
+        <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+      </div>
     </div>
   );
 }
@@ -194,13 +196,6 @@ export function FindURL() {
         <div className=' flex ml-12 items-center gap-12 mx-7 text-3xl'>
           <ChevronRight />
           <div className='max-h-96 overflow-clip flex text-lg gap-3 flex-col text-white relative'>
-            <div
-              className='absolute top-0 left-0 right-0 bottom-0'
-              style={{
-                background:
-                  'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
-              }}
-            />
             <div className='flex flex-col' style={{ marginTop: -150 }}>
               <p className='text-3xl'>google.com</p>
               <p className='text-3xl'>thisisit.com</p>
