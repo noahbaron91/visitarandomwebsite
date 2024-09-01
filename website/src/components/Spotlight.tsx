@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { useIsHoveringButton } from '../context/IsHoveringButton';
 
-const BLOB_SIZE = 100;
+const BLOB_SIZE = 75;
 
 const SpotlightContext = createContext<{
   top: number;
@@ -28,6 +29,7 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
   const [stretchY, setStretchY] = useState(1);
 
   const cancelTimeoutRef = useRef<null | NodeJS.Timeout>(null);
+  const { isHoveringButton } = useIsHoveringButton();
   // calculate movement speed and stretch the spotlight
 
   useEffect(() => {
@@ -45,10 +47,10 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
 
       //   cancelTimeoutRef.current = timeout;
 
-      setTimeout(() => {
-        setMousePositionX(event.clientX);
-        setMousePositionY(event.clientY);
-      }, 50);
+      // setTimeout(() => {
+      setMousePositionX(event.clientX);
+      setMousePositionY(event.clientY);
+      // }, 50);
     });
   }, []);
 
@@ -61,21 +63,23 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
         right: mousePositionX + (BLOB_SIZE - 25) / 2,
       }}
     >
-      <div
-        style={{
-          position: 'fixed',
-          zIndex: 999,
-          pointerEvents: 'none',
-          top: mousePositionY - BLOB_SIZE / 2,
-          left: mousePositionX - BLOB_SIZE / 2,
-          width: BLOB_SIZE,
-          height: BLOB_SIZE,
-          borderRadius: 99999,
-          opacity: 0.2,
-          background:
-            'radial-gradient(circle, #C580FC 0%, #C580FC 20%, #000 100%)',
-        }}
-      />
+      {!isHoveringButton && (
+        <div
+          style={{
+            position: 'fixed',
+            zIndex: 999,
+            pointerEvents: 'none',
+            top: mousePositionY - BLOB_SIZE / 2,
+            left: mousePositionX - BLOB_SIZE / 2,
+            width: BLOB_SIZE,
+            height: BLOB_SIZE,
+            borderRadius: 99999,
+            opacity: 0.2,
+            background:
+              'radial-gradient(circle, #C580FC 0%, #C580FC 20%, #000 100%)',
+          }}
+        />
+      )}
       {children}
     </SpotlightContext.Provider>
   );

@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSpotlight } from './Spotlight';
+import { useIsHoveringButton } from '../context/IsHoveringButton';
 
 function Letter({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
 
   const spotlight = useSpotlight();
   const [isHighlighted, setIsHighlighted] = useState(false);
+  const { isHoveringButton } = useIsHoveringButton();
 
   useEffect(() => {
     if (!ref.current) return;
@@ -28,7 +30,12 @@ function Letter({ value }: { value: string }) {
   }, [spotlight.left, spotlight.right, spotlight.top, spotlight.bottom]);
 
   return (
-    <span ref={ref} style={{ ...(isHighlighted && { color: '#c580fc' }) }}>
+    <span
+      ref={ref}
+      style={{
+        ...(isHighlighted && !isHoveringButton && { color: '#c580fc' }),
+      }}
+    >
       {value}
     </span>
   );

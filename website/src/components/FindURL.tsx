@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { usePageContext } from '../context/page';
+import { usePageContext } from '../context/Page';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 
