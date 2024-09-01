@@ -20,17 +20,17 @@ function GitHubIcon() {
 function CloseIcon() {
   return (
     <svg
-      width='32'
-      height='33'
-      viewBox='0 0 32 33'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >
       <path
         fillRule='evenodd'
         clipRule='evenodd'
-        d='M7.05727 7.55654C7.57797 7.03584 8.42219 7.03584 8.94289 7.55654L16.0001 14.6137L23.0573 7.55654C23.578 7.03584 24.4222 7.03584 24.9429 7.55654C25.4636 8.07724 25.4636 8.92146 24.9429 9.44216L17.8857 16.4993L24.9429 23.5565C25.4636 24.0772 25.4636 24.9215 24.9429 25.4422C24.4222 25.9629 23.578 25.9629 23.0573 25.4422L16.0001 18.385L8.94289 25.4422C8.42219 25.9629 7.57797 25.9629 7.05727 25.4422C6.53657 24.9215 6.53657 24.0772 7.05727 23.5565L14.1145 16.4993L7.05727 9.44216C6.53657 8.92146 6.53657 8.07724 7.05727 7.55654Z'
-        className='fill-gray-400'
+        d='M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z'
+        fill='#A8A29E'
       />
     </svg>
   );
@@ -48,9 +48,15 @@ export function Footer() {
       <Dialog.Root>
         <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 z-40' />
         <Dialog.Content className='flex flex-col gap-3 p-6 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-3xl border border-gray-900'>
-          <Dialog.Title className='text-3xl text-white'>
-            I{"'"}m glad!
-          </Dialog.Title>
+          <div className='flex justify-between'>
+            <Dialog.Title className='text-3xl text-white'>
+              I{"'"}m glad!
+            </Dialog.Title>
+            <Dialog.Close>
+              <CloseIcon />
+            </Dialog.Close>
+          </div>
+
           <Dialog.Description asChild>
             <div className='flex gap-3 flex-col'>
               <p>You can view a list of my projects on nbaron.com</p>

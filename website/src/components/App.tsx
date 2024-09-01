@@ -7,9 +7,9 @@ import { VisitARandomWebsite } from './VisitARandomWebsite';
 
 function HomePage() {
   return (
-    <>
-      <div className='w-full fixed z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-balance flex flex-col items-center gap-9 px-6'>
-        <div className='text-3xl lg:text-4xl font-bold flex md:w-[950px] flex-col text-center gap-6'>
+    <Spotlight>
+      <div className='w-full fixed pointer-events-none z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-balance flex flex-col items-center gap-9 px-6'>
+        <div className='text-2xl lg:text-4xl font-bold flex md:w-[950px] flex-col text-center gap-6'>
           <h1>96.55% of pages receive no organic search traffic from Google</h1>
           <h1>
             Visit a random website on the internet and discover something new
@@ -21,8 +21,7 @@ function HomePage() {
         </div>
       </div>
       <TextComponents />
-      <Spotlight />
-    </>
+    </Spotlight>
   );
 }
 

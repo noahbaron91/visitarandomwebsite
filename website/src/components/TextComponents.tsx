@@ -1,57 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
-
-export function TextComponent() {
-  return (
-    <p
-      style={{ top: 250, left: 100 }}
-      className='fixed text-gray-700 text-3xl hover:text-accent cursor-pointer'
-    >
-      thisisit.com
-    </p>
-  );
-}
+import { HighlightOnHoverText } from './HighlightOnHoverText';
 
 export function TextComponents() {
-  // const [highlight, setHighlight] = useState(0);
-  // const [hasEntered, setHasEntered] = useState(false);
-
-  // const [mousePositionY, setMousePositionY] = useState<null | number>(0);
-  // const [mousePositionX, setMousePositionX] = useState<null | number>(0);
-
-  // const handleMouseMove = useCallback(() => {
-  //   if (!hasEntered) {
-  //     return;
-  //   }
-
-  //   console.log('highlight');
-  // }, [hasEntered]);
-
-  // useEffect(() => {
-  //   window.addEventListener('mousemove', handleMouseMove);
-
-  //   return () => {
-  //     window.removeEventListener('mousemove', handleMouseMove);
-  //   };
-  // }, []);
-
-  // const handleOnMouseEnter = () => {
-  //   setHasEntered(true);
-  // };
-
-  // const handleOnMouseExit = () => {
-  //   setHasEntered(false);
-  // };
+  const url = 'thisisit.com';
 
   return (
     <div
       style={{ top: 250, left: 100 }}
-      // onMouseEnter={handleOnMouseEnter}
-      // onMouseLeave={handleOnMouseExit}
-      className=' fixed text-gray-700 text-3xl hover:text-accent cursor-pointer'
+      className=' fixed text-gray-700 text-3xl cursor-default'
     >
-      <div className='relative'>
-        <div>thisisit.com</div>
-      </div>
+      <HighlightOnHoverText text={url} />
     </div>
   );
 }
