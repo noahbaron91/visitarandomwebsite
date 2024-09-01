@@ -4,6 +4,9 @@ import { Footer } from './Footer';
 import { Spotlight } from './Spotlight';
 import { TextComponents } from './TextComponents';
 import { VisitARandomWebsite } from './VisitARandomWebsite';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 function HomePage() {
   return (
@@ -46,3 +49,5 @@ export function App() {
     </PageContextProvider>
   );
 }
+
+gsap.registerPlugin(useGSAP, ScrollToPlugin);

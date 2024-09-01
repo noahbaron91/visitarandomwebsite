@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { usePageContext } from '../context/page';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 function ChevronRight() {
   return (
@@ -67,9 +69,89 @@ async function getURL() {
   }
 }
 
+function ScrollAnimation() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      gsap.to(ref.current, {
+        scrollTo: 1500,
+        duration: 10,
+        ease: 'expo.out',
+      });
+    },
+    { scope: ref }
+  );
+
+  return (
+    <div
+      ref={ref}
+      className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative'
+    >
+      <div
+        className='absolute top-0 left-0 right-0 bottom-0'
+        style={{
+          background:
+            'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
+        }}
+      />
+      <p className='text-3xl'>google.com</p>
+      <p className='text-3xl'>thisisit.com</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>google.com</p>
+      <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+      <p className='text-3xl'>coursera.org</p>
+    </div>
+  );
+}
+
 export function FindURL() {
   const [url, setURL] = useState<null | string>(null);
-  const [hasFoundLink, setHasFoundLink] = useState(true);
+  const [hasFoundLink, setHasFoundLink] = useState(false);
   const { setPage } = usePageContext();
 
   useEffect(() => {
@@ -84,7 +166,7 @@ export function FindURL() {
     return (
       <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
         <div className='mx-6 flex flex-col gap-4'>
-          <div>
+          <div className='flex flex-col gap-1'>
             <p className='text-gray-600'>https://example.com/path-1/slug</p>
             <h3 className='text-4xl text-white font-bold'>
               Finding you the perfect link
@@ -150,29 +232,7 @@ export function FindURL() {
       </h3>
       <div className=' flex ml-16 items-center gap-12 mx-7 text-3xl'>
         <ChevronRight />
-        <div className='max-h-96 overflow-clip flex text-lg gap-3 flex-col text-white relative'>
-          <div
-            className='absolute top-0 left-0 right-0 bottom-0'
-            style={{
-              background:
-                'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
-            }}
-          />
-          <p className='text-3xl'>google.com</p>
-          <p className='text-3xl'>thisisit.com</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>google.com</p>
-          <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-          <p className='text-3xl'>coursera.org</p>
-        </div>
+        <ScrollAnimation />
       </div>
     </div>
   );
