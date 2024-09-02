@@ -7,6 +7,7 @@ export function TextComponents() {
 
   return (
     <>
+      <Carousel top={0} />
       <Carousel top={50} />
       <Carousel top={100} />
       <Carousel top={150} />
@@ -22,6 +23,9 @@ export function TextComponents() {
       <Carousel top={650} />
       <Carousel top={700} />
       <Carousel top={750} />
+      <Carousel top={800} />
+      <Carousel top={850} />
+      <Carousel top={900} />
       {/* <Carousel top={800} /> */}
       {/* <div
         style={{ top: 300, left: left - 50 }}

@@ -474,7 +474,7 @@ export function FindURL() {
   }
 
   return (
-    <div className='fixed bottom-36 flex flex-col gap-5 w-full'>
+    <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
       <HeadingInformation
         hasFoundLink={hasFoundLink}
         url={url}
