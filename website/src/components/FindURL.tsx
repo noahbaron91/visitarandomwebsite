@@ -405,16 +405,26 @@ const useURL = () => {
   return url;
 };
 
-function HeadingInformation({ hasFoundLink }: { hasFoundLink: boolean }) {
+function HeadingInformation({
+  hasFoundLink,
+  url,
+  onReroll,
+}: {
+  hasFoundLink: boolean;
+  url: string;
+  onReroll: () => void;
+}) {
+  const urlWithoutProtocol = url.replace(/(^\w+:|^)\/\//, '');
+
   if (hasFoundLink) {
     return (
       <div className='mx-12 flex flex-col gap-4'>
-        <p className='text-xl font-bold'>example.com/path-1/slug</p>
+        <p className='text-xl font-bold'>{urlWithoutProtocol}</p>
         <div className='flex flex-col gap-2'>
           <a
             type='button'
             className='flex items-center justify-between px-6 py-3 rounded bg-gray-900 border border-gray-700'
-            href='https://example.com'
+            href={url}
             target='_blank'
           >
             Visit website
@@ -423,6 +433,7 @@ function HeadingInformation({ hasFoundLink }: { hasFoundLink: boolean }) {
           <button
             type='button'
             className='flex items-center justify-between rounded px-6 py-3 bg-gray-900 border border-gray-700'
+            onClick={onReroll}
           >
             Reroll
             <RerollLink />
@@ -454,7 +465,7 @@ export function FindURL() {
   const url = useURL();
   const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
 
-  if (!urlWithoutProtocol) {
+  if (!urlWithoutProtocol || !url) {
     return (
       <div className='fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'>
         <Spinner />
@@ -464,7 +475,11 @@ export function FindURL() {
 
   return (
     <div className='fixed bottom-36 flex flex-col gap-5 w-full'>
-      <HeadingInformation hasFoundLink={hasFoundLink} />
+      <HeadingInformation
+        hasFoundLink={hasFoundLink}
+        url={url}
+        onReroll={() => setHasFoundLink(false)}
+      />
       <div className='flex items-center gap-8 mx-auto text-3xl'>
         <div id='ticker-marker'>
           <ChevronRight />
