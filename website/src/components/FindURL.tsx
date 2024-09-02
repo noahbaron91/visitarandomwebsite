@@ -406,15 +406,10 @@ const useURL = () => {
 };
 
 function HeadingInformation({ hasFoundLink }: { hasFoundLink: boolean }) {
-  if (false) {
+  if (hasFoundLink) {
     return (
-      <div className='mx-6 flex flex-col gap-4'>
-        <div className='flex flex-col gap-1'>
-          <p className='text-gray-600'>https://example.com/path-1/slug</p>
-          <h3 className='text-4xl text-white font-bold'>
-            Found you the perfect link
-          </h3>
-        </div>
+      <div className='mx-12 flex flex-col gap-4'>
+        <p className='text-xl font-bold'>example.com/path-1/slug</p>
         <div className='flex flex-col gap-2'>
           <a
             type='button'
@@ -439,7 +434,8 @@ function HeadingInformation({ hasFoundLink }: { hasFoundLink: boolean }) {
 
   return (
     <h3 className='text-4xl text-white mx-6 font-bold text-center z-10'>
-      Finding you the perfect link<span>.</span>
+      <span>Finding you the perfect link</span>
+      <span>.</span>
       <span>.</span>
       <span>.</span>
     </h3>
@@ -467,9 +463,9 @@ export function FindURL() {
   }
 
   return (
-    <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
+    <div className='fixed bottom-36 flex flex-col gap-5 w-full'>
       <HeadingInformation hasFoundLink={hasFoundLink} />
-      <div className='flex ml-16 items-center gap-12 mx-7 text-3xl'>
+      <div className='flex items-center gap-8 mx-auto text-3xl'>
         <div id='ticker-marker'>
           <ChevronRight />
         </div>
