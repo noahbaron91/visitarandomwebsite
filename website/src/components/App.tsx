@@ -6,7 +6,7 @@ import { VisitARandomWebsite } from './VisitARandomWebsite';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { PageContextProvider, usePageContext } from '../context/Page';
+import { PageContextProvider, usePageContext } from '../context/page';
 import { IsHoveringButtonProvider } from '../context/IsHoveringButton';
 
 function HomePage() {

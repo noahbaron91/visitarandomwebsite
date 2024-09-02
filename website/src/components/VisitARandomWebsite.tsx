@@ -1,5 +1,5 @@
 import { useIsHoveringButton } from '../context/IsHoveringButton';
-import { usePageContext } from '../context/Page';
+import { usePageContext } from '../context/page';
 import { HighlightOnHoverText } from './HighlightOnHoverText';
 
 export function VisitARandomWebsite() {
