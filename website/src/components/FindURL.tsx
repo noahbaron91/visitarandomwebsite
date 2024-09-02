@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { usePageContext } from '../context/Page';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { usePageContext } from '../context/Page';
 
 function ChevronRight() {
   return (
@@ -69,15 +69,32 @@ async function getURL() {
   }
 }
 
-function ScrollAnimation() {
+function ScrollAnimation({ url }: { url: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(
     () => {
+      if (!ref.current || !targetRef.current) return;
+
+      const tickerMarker = document.getElementById('ticker-marker');
+      const tickerWrapper = document.getElementById('ticker-wrapper');
+
+      if (tickerMarker === null || tickerWrapper === null) return;
+
+      const tickerMarkerTop = tickerMarker.getBoundingClientRect().top;
+      const tickerWrapperTop = tickerWrapper.getBoundingClientRect().top;
+
+      const topPositionDifference = tickerMarkerTop - tickerWrapperTop;
+
+      const scrollToPosition =
+        targetRef.current.offsetTop - topPositionDifference;
+
       gsap.to(ref.current, {
-        scrollTo: 1500,
-        duration: 10,
-        ease: 'expo.out',
+        scrollTo: scrollToPosition,
+        duration: 15,
+        ease: 'power3.out',
+        delay: 0.25,
       });
     },
     { scope: ref }
@@ -87,6 +104,7 @@ function ScrollAnimation() {
     <div className='relative'>
       <div
         className='absolute top-0 left-0 right-0 bottom-0 z-10'
+        id='ticker-wrapper'
         style={{
           background:
             'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
@@ -146,23 +164,244 @@ function ScrollAnimation() {
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl' ref={targetRef}>
+          {url}
+        </p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
+        <p className='text-3xl'>coursera.org</p>
       </div>
     </div>
   );
 }
 
-export function FindURL() {
+const useURL = () => {
   const [url, setURL] = useState<null | string>(null);
+
+  useEffect(() => {
+    getURL().then((url) => {
+      setURL(url);
+    });
+  }, []);
+
+  return url;
+};
+
+export function FindURL() {
   const [hasFoundLink, setHasFoundLink] = useState(false);
   const { setPage } = usePageContext();
 
-  useEffect(() => {
-    try {
-      getURL().then((url) => {
-        setURL(url);
-      });
-    } catch (error) {}
-  }, []);
+  const url = useURL();
+
+  if (!url) {
+    return <p>Loading...</p>;
+  }
 
   if (hasFoundLink) {
     return (
@@ -226,8 +465,10 @@ export function FindURL() {
         <span>.</span>
       </h3>
       <div className=' flex ml-16 items-center gap-12 mx-7 text-3xl'>
-        <ChevronRight />
-        <ScrollAnimation />
+        <div id='ticker-marker'>
+          <ChevronRight />
+        </div>
+        <ScrollAnimation url={url} />
       </div>
     </div>
   );

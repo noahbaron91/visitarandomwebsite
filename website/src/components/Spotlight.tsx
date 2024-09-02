@@ -54,6 +54,8 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  // console.log({ isHoveringButton });
+
   return (
     <SpotlightContext.Provider
       value={{

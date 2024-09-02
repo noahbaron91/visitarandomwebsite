@@ -18,7 +18,10 @@ export function VisitARandomWebsite() {
       onMouseEnter={() => setIsHoveringButton(true)}
       onMouseLeave={() => setIsHoveringButton(false)}
     >
-      <HighlightOnHoverText text='Visit a random website' />
+      <HighlightOnHoverText
+        ignoreIsHoveringButton
+        text='Visit a random website'
+      />
     </button>
   );
 }

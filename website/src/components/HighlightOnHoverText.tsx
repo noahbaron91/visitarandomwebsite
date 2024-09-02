@@ -2,7 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useSpotlight } from './Spotlight';
 import { useIsHoveringButton } from '../context/IsHoveringButton';
 
-function Letter({ value }: { value: string }) {
+function Letter({
+  value,
+  ignoreIsHoveringButton,
+}: {
+  value: string;
+  ignoreIsHoveringButton: boolean;
+}) {
   const ref = useRef<HTMLSpanElement>(null);
 
   const spotlight = useSpotlight();
@@ -29,6 +35,19 @@ function Letter({ value }: { value: string }) {
     setIsHighlighted(true);
   }, [spotlight.left, spotlight.right, spotlight.top, spotlight.bottom]);
 
+  if (ignoreIsHoveringButton) {
+    return (
+      <span
+        ref={ref}
+        style={{
+          ...(isHighlighted && { color: '#c580fc' }),
+        }}
+      >
+        {value}
+      </span>
+    );
+  }
+
   return (
     <span
       ref={ref}
@@ -41,13 +60,23 @@ function Letter({ value }: { value: string }) {
   );
 }
 
-export function HighlightOnHoverText({ text }: { text: string }) {
+export function HighlightOnHoverText({
+  text,
+  ignoreIsHoveringButton = false,
+}: {
+  text: string;
+  ignoreIsHoveringButton?: boolean;
+}) {
   const textArr = text.split('');
 
   return (
     <>
       {textArr.map((letter, index) => (
-        <Letter value={letter} key={index} />
+        <Letter
+          value={letter}
+          key={index}
+          ignoreIsHoveringButton={ignoreIsHoveringButton}
+        />
       ))}
     </>
   );
