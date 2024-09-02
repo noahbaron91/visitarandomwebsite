@@ -6,6 +6,7 @@ export default {
       white: '#FFFFFF',
       black: '#000000',
       accent: '#C580FC',
+      transparent: 'transparent',
       gray: {
         50: '#FAFAF9',
         100: '#F5F5F4',

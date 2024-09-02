@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { usePageContext } from '../context/Page';
 
 function ChevronRight() {
   return (
@@ -69,13 +68,21 @@ async function getURL() {
   }
 }
 
-function ScrollAnimation({ url }: { url: string }) {
+function ScrollAnimation({
+  url,
+  onComplete,
+  isComplete,
+}: {
+  url: string;
+  isComplete: boolean;
+  onComplete: () => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
 
   useGSAP(
     () => {
-      if (!ref.current || !targetRef.current) return;
+      if (isComplete || !ref.current || !targetRef.current) return;
 
       const tickerMarker = document.getElementById('ticker-marker');
       const tickerWrapper = document.getElementById('ticker-wrapper');
@@ -95,6 +102,7 @@ function ScrollAnimation({ url }: { url: string }) {
         duration: 15,
         ease: 'power3.out',
         delay: 0.25,
+        onComplete,
       });
     },
     { scope: ref }
@@ -118,7 +126,7 @@ function ScrollAnimation({ url }: { url: string }) {
         <p className='text-3xl'>thisisit.com</p>
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>google.com</p>
-        <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
+        <p className='text-3xl'>thisisit.com</p>
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
@@ -366,7 +374,11 @@ function ScrollAnimation({ url }: { url: string }) {
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
         <p className='text-3xl'>coursera.org</p>
-        <p className='text-3xl' ref={targetRef}>
+        <p
+          className='text-3xl'
+          ref={targetRef}
+          style={{ color: isComplete ? '#C580FC' : undefined }}
+        >
           {url}
         </p>
         <p className='text-3xl'>coursera.org</p>
@@ -393,82 +405,79 @@ const useURL = () => {
   return url;
 };
 
-export function FindURL() {
-  const [hasFoundLink, setHasFoundLink] = useState(false);
-  const { setPage } = usePageContext();
-
-  const url = useURL();
-
-  if (!url) {
-    return <p>Loading...</p>;
-  }
-
-  if (hasFoundLink) {
+function HeadingInformation({ hasFoundLink }: { hasFoundLink: boolean }) {
+  if (false) {
     return (
-      <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
-        <div className='mx-6 flex flex-col gap-4'>
-          <div className='flex flex-col gap-1'>
-            <p className='text-gray-600'>https://example.com/path-1/slug</p>
-            <h3 className='text-4xl text-white font-bold'>
-              Finding you the perfect link
-            </h3>
-          </div>
-          <div className='flex flex-col gap-2'>
-            <a
-              type='button'
-              className='flex items-center justify-between px-6 py-3 rounded bg-gray-900 border border-gray-700'
-              href='https://example.com'
-              target='_blank'
-            >
-              Visit website
-              <ExternalLink />
-            </a>
-            <button
-              type='button'
-              className='flex items-center justify-between rounded px-6 py-3 bg-gray-900 border border-gray-700'
-            >
-              Reroll
-              <RerollLink />
-            </button>
-          </div>
+      <div className='mx-6 flex flex-col gap-4'>
+        <div className='flex flex-col gap-1'>
+          <p className='text-gray-600'>https://example.com/path-1/slug</p>
+          <h3 className='text-4xl text-white font-bold'>
+            Found you the perfect link
+          </h3>
         </div>
-        <div className=' flex ml-12 items-center gap-12 mx-7 text-3xl'>
-          <ChevronRight />
-          <div className='max-h-96 overflow-clip flex text-lg gap-3 flex-col text-white relative'>
-            <div className='flex flex-col' style={{ marginTop: -150 }}>
-              <p className='text-3xl'>google.com</p>
-              <p className='text-3xl'>thisisit.com</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>google.com</p>
-              <p className='text-3xl text-[#C580FC]'>thisisit.com</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-              <p className='text-3xl'>coursera.org</p>
-            </div>
-          </div>
+        <div className='flex flex-col gap-2'>
+          <a
+            type='button'
+            className='flex items-center justify-between px-6 py-3 rounded bg-gray-900 border border-gray-700'
+            href='https://example.com'
+            target='_blank'
+          >
+            Visit website
+            <ExternalLink />
+          </a>
+          <button
+            type='button'
+            className='flex items-center justify-between rounded px-6 py-3 bg-gray-900 border border-gray-700'
+          >
+            Reroll
+            <RerollLink />
+          </button>
         </div>
       </div>
     );
   }
 
   return (
+    <h3 className='text-4xl text-white mx-6 font-bold text-center z-10'>
+      Finding you the perfect link<span>.</span>
+      <span>.</span>
+      <span>.</span>
+    </h3>
+  );
+}
+
+function Spinner() {
+  return (
+    <div className='animate-spin w-11 h-11 border-4 border-solid border-white border-b-transparent rounded-[50%]'></div>
+  );
+}
+
+export function FindURL() {
+  const [hasFoundLink, setHasFoundLink] = useState(false);
+
+  const url = useURL();
+  const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
+
+  if (!urlWithoutProtocol) {
+    return (
+      <div className='fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'>
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
     <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
-      <h3 className='text-4xl text-white mx-6 font-bold text-center'>
-        Finding you the perfect link<span>.</span>
-        <span>.</span>
-        <span>.</span>
-      </h3>
-      <div className=' flex ml-16 items-center gap-12 mx-7 text-3xl'>
+      <HeadingInformation hasFoundLink={hasFoundLink} />
+      <div className='flex ml-16 items-center gap-12 mx-7 text-3xl'>
         <div id='ticker-marker'>
           <ChevronRight />
         </div>
-        <ScrollAnimation url={url} />
+        <ScrollAnimation
+          isComplete={hasFoundLink}
+          url={urlWithoutProtocol}
+          onComplete={() => setHasFoundLink(true)}
+        />
       </div>
     </div>
   );
