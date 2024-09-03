@@ -17,3 +17,7 @@ body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.visit-website {
+  display: none;
+}

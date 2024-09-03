@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import { HighlightOnHoverText } from './HighlightOnHoverText';
 import { Carousel } from './Carousel';
 
 export function TextComponents() {
