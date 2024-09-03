@@ -119,7 +119,7 @@ function ScrollAnimation({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
-  const tickerWrapperRef = useRef<HTMLDivElement>(null);
+  const buttonsWrapperRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -145,7 +145,7 @@ function ScrollAnimation({
       ease: 'power3.out',
       delay: 0.25,
       onComplete: () => {
-        const FADE_OUT_DURATION = 1.5;
+        const FADE_OUT_DURATION = 1;
 
         gsap.to('.fade-out', {
           opacity: 0,
@@ -167,31 +167,28 @@ function ScrollAnimation({
                     opacity: 1,
                     duration: FADE_OUT_DURATION,
                     ease: 'expo.out',
-                    onComplete: () => {
-                      const state = Flip.getState('.fade-in');
-
-                      document
-                        .querySelectorAll('.fade-in')
-                        .forEach((element) => {
-                          console.log(element);
-                          (element as HTMLDivElement).style.display = 'flex';
-                        });
-
-                      Flip.from(state);
-                    },
                   });
                 },
               });
+
+              setTimeout(
+                () => {
+                  console.log('starting');
+                  document.querySelectorAll('.fade-in').forEach((element) => {
+                    (element as HTMLDivElement).style.display = 'flex';
+                  });
+
+                  gsap.to('.fade-in', {
+                    opacity: 1.5,
+                    duration: FADE_OUT_DURATION,
+                    ease: 'expo.out',
+                  });
+                },
+                FADE_OUT_DURATION * 1000 - 0.25 * 1000
+              );
             }
           },
         });
-
-        // gsap.to(ref.current, {
-        //   delay: FADE_OUT_DURATION - 0.5,
-        //   left: 25,
-        //   // duration: FADE_OUT_DURATION - 0.5,
-        //   // x: -100,
-        // });
       },
     });
   }, []);
@@ -476,7 +473,7 @@ function ScrollAnimation({
             <p className='fade-out text-3xl'>coursera.org</p>
             <div className='flex flex-col w-full gap-4' ref={targetRef}>
               <p className='text-3xl'>{url}</p>
-              <div className='fade-in flex-col gap-2 w-full pr-[36px]'>
+              <div className='opacity-0 fade-in flex-col gap-2 w-full pr-[36px]'>
                 <a
                   href={url}
                   target='_blank'
