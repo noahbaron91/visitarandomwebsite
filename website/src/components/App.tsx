@@ -8,6 +8,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { PageContextProvider, usePageContext } from '../context/page';
 import { IsHoveringButtonProvider } from '../context/IsHoveringButton';
+import { Flip } from 'gsap/Flip';
 
 function HomePage() {
   return (
@@ -55,4 +56,4 @@ export function App() {
   );
 }
 
-gsap.registerPlugin(useGSAP, ScrollToPlugin);
+gsap.registerPlugin(useGSAP, Flip, ScrollToPlugin);

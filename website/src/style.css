@@ -21,3 +21,7 @@ body {
 .visit-website {
   display: none;
 }
+
+.fade-in {
+  display: none;
+}
