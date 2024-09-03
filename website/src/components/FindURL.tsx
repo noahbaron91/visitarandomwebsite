@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
-import { O } from '../../dist/_worker.js/chunks/astro/env-setup_DQkCwUzq.mjs';
 
 gsap.registerPlugin(Flip);
 
