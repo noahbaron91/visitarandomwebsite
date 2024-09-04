@@ -34,27 +34,10 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     window.addEventListener('mousemove', (event) => {
-      //   if (cancelTimeoutRef.current !== null) {
-      //     clearTimeout(cancelTimeoutRef.current);
-      //   }
-
-      //     // calculate stretch
-
-      //   // check if moved within the 500ms
-      //   const timeout = setTimeout(() => {
-      //     cancelTimeoutRef.current = null;
-      //   }, 500);
-
-      //   cancelTimeoutRef.current = timeout;
-
-      // setTimeout(() => {
       setMousePositionX(event.clientX);
       setMousePositionY(event.clientY);
-      // }, 50);
     });
   }, []);
-
-  // console.log({ isHoveringButton });
 
   return (
     <SpotlightContext.Provider

@@ -40,8 +40,9 @@ export function Footer() {
   return (
     <>
       <a
-        href='https://github.com/noahbaron91/onlyvisitonce'
+        href='https://github.com/noahbaron91/visitarandomwebsite'
         className='fixed bottom-3 left-3'
+        target='_blank'
       >
         <GitHubIcon />
       </a>
