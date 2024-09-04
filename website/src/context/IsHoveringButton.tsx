@@ -20,7 +20,10 @@ export const IsHoveringButtonProvider = ({
 
   return (
     <IsHoveringButtonContext.Provider
-      value={{ isHoveringButton, setIsHoveringButton }}
+      value={{
+        isHoveringButton,
+        setIsHoveringButton,
+      }}
     >
       {children}
     </IsHoveringButtonContext.Provider>

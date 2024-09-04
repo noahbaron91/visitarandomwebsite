@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { HighlightOnHoverText } from './HighlightOnHoverText';
 
 export function Carousel({ top }: { top: number }) {
   //   const initialLeft = ;
@@ -21,69 +20,37 @@ export function Carousel({ top }: { top: number }) {
       className='gap-4 flex items-center fixed text-gray-800 text-3xl cursor-default'
       style={{ top, left }}
     >
-      <p>
-        <HighlightOnHoverText text='hello.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='example.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='google.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='apple.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='microsoft.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='wendys.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='example.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='google.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='apple.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='microsoft.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='wendys.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='example.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='google.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='apple.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='microsoft.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='wendys.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='example.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='google.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='apple.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='microsoft.com' />
-      </p>
-      <p>
-        <HighlightOnHoverText text='wendys.com' />
-      </p>
+      <p className='url'>hello.com</p>
+      <p className='url'>apple.com</p>
+      <p className='url'>microsoft.com</p>
+      <p className='url'>wendys.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>wendys.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>wendys.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>wendys.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
+      <p className='url'>hello.com</p>
     </div>
   );
 }

@@ -228,8 +228,6 @@ function DesktopScrollAnimation({
       ),
       delay: 0,
       onComplete: () => {
-        console.log({ domain, urlWithoutProtocol });
-
         gsap.to(targetRef.current, {
           color: '#C580FC',
           duration: 1,
@@ -397,8 +395,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
       ),
       delay: 0,
       onComplete: () => {
-        console.log({ domain, urlWithoutProtocol });
-
         const textElement = document.getElementById('target-domain');
 
         gsap.to('.fade-out', {

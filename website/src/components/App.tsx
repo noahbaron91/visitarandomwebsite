@@ -11,11 +11,11 @@ import {
   useIsHoveringButton,
 } from '../context/IsHoveringButton';
 import { Flip } from 'gsap/Flip';
-import { HighlightOnHoverText } from './HighlightOnHoverText';
+import type { LineLoop } from 'three';
 
-function HomePage() {
-  const { setPage } = usePageContext();
+function CTASection() {
   const { setIsHoveringButton } = useIsHoveringButton();
+  const { setPage } = usePageContext();
 
   const handleClick = () => {
     gsap.to('.wrapper', {
@@ -27,6 +27,31 @@ function HomePage() {
     });
   };
 
+  const handleMouseEnter = () => {
+    setIsHoveringButton(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHoveringButton(false);
+  };
+
+  return (
+    <div className='flex flex-col gap-3 items-center'>
+      <button
+        type='button'
+        className='pointer-events-auto py-3 px-9 text-xl bg-gray-900 hover:border-accent transition-colors rounded-lg border border-gray-700'
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        Visit a random website
+      </button>
+      <p className='text-gray-400'>over 7,500,000 pages indexed</p>
+    </div>
+  );
+}
+
+function HomePage() {
   return (
     <div className='wrapper'>
       <IsHoveringButtonProvider>
@@ -39,21 +64,7 @@ function HomePage() {
                 new
               </h1>
             </div>
-            <div className='flex flex-col gap-3 items-center'>
-              <button
-                type='button'
-                className='pointer-events-auto py-3 px-9 text-xl bg-gray-900 rounded-lg border border-gray-700'
-                onClick={handleClick}
-                onMouseEnter={() => setIsHoveringButton(true)}
-                onMouseLeave={() => setIsHoveringButton(false)}
-              >
-                <HighlightOnHoverText
-                  ignoreIsHoveringButton
-                  text='Visit a random website'
-                />
-              </button>
-              <p className='text-gray-400'>over 7,500,000 pages indexed</p>
-            </div>
+            <CTASection />
           </div>
           <TextComponents />
         </Spotlight>
