@@ -21,40 +21,74 @@ export const useSpotlight = () => {
   return value;
 };
 
+const highlightHovered = ({
+  mousePositionX,
+  mousePositionY,
+  isHoveringButton,
+}: {
+  mousePositionX: number;
+  mousePositionY: number;
+  isHoveringButton: boolean;
+}) => {
+  const elements = document.getElementsByClassName('url');
+
+  const spotlight = {
+    left: mousePositionX - (BLOB_SIZE - 25) / 2,
+    top: mousePositionY - (BLOB_SIZE - 25) / 2,
+    bottom: mousePositionY + (BLOB_SIZE - 25) / 2,
+    right: mousePositionX + (BLOB_SIZE - 25) / 2,
+  };
+
+  Array.from(elements).forEach((element) => {
+    const boundingBoxRect = element.getBoundingClientRect();
+
+    const { top, left, right, bottom } = boundingBoxRect;
+
+    if (
+      isHoveringButton ||
+      spotlight.left > right ||
+      spotlight.right < left ||
+      spotlight.top > bottom ||
+      spotlight.bottom < top
+    ) {
+      (element as HTMLDivElement).style.color = '#292524';
+      return;
+    }
+
+    (element as HTMLDivElement).style.color = '#c580fc';
+  });
+};
+
 export function Spotlight({ children }: { children: React.ReactNode }) {
   const [mousePositionX, setMousePositionX] = useState(0);
   const [mousePositionY, setMousePositionY] = useState(0);
 
-  const [stretchX, setStretchX] = useState(1);
-  const [stretchY, setStretchY] = useState(1);
-
-  const cancelTimeoutRef = useRef<null | NodeJS.Timeout>(null);
   const { isHoveringButton } = useIsHoveringButton();
-  // calculate movement speed and stretch the spotlight
 
   useEffect(() => {
-    window.addEventListener('mousemove', (event) => {
-      //   if (cancelTimeoutRef.current !== null) {
-      //     clearTimeout(cancelTimeoutRef.current);
-      //   }
+    highlightHovered({ mousePositionX, mousePositionY, isHoveringButton });
 
-      //     // calculate stretch
+    const clearInterval = setInterval(() => {
+      highlightHovered({ mousePositionX, mousePositionY, isHoveringButton });
+    }, 25);
 
-      //   // check if moved within the 500ms
-      //   const timeout = setTimeout(() => {
-      //     cancelTimeoutRef.current = null;
-      //   }, 500);
+    return () => {
+      window.clearInterval(clearInterval);
+    };
+  }, [mousePositionX, mousePositionY, isHoveringButton]);
 
-      //   cancelTimeoutRef.current = timeout;
-
-      // setTimeout(() => {
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
       setMousePositionX(event.clientX);
       setMousePositionY(event.clientY);
-      // }, 50);
-    });
-  }, []);
+    };
 
-  // console.log({ isHoveringButton });
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   return (
     <SpotlightContext.Provider
@@ -67,10 +101,9 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
     >
       {!isHoveringButton && (
         <div
+          className='fixed pointer-events-none'
           style={{
-            position: 'fixed',
-            zIndex: 999,
-            pointerEvents: 'none',
+            zIndex: 30,
             top: mousePositionY - BLOB_SIZE / 2,
             left: mousePositionX - BLOB_SIZE / 2,
             width: BLOB_SIZE,

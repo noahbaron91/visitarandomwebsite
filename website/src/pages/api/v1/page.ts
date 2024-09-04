@@ -13,7 +13,7 @@ export const GET: APIRoute = async (ctx) => {
   return new Response(
     JSON.stringify({
       success: true,
-      url: 'https://example.com',
+      url: 'https://www.example.com/path/1',
     }),
     { status: 200 }
   );

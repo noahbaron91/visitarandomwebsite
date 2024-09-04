@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { CustomEase } from 'gsap/all';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { PLACEHOLDER_DOMAINS, SEARCHING_TEXT } from '../constants';
+import * as Dialog from '@radix-ui/react-dialog';
 
-gsap.registerPlugin(Flip, CustomEase);
+gsap.registerPlugin(Flip, CustomEase, TextPlugin);
 
-function ChevronRight() {
+function ChevronRight({ scale }: { scale: number }) {
   return (
     <svg
       width='17'
@@ -13,6 +16,7 @@ function ChevronRight() {
       viewBox='0 0 17 33'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      style={{ transform: `scale(${scale})` }}
     >
       <path
         d='M16.4736 16.5L0.368359 32.0885L0.368359 0.911543L16.4736 16.5Z'
@@ -60,6 +64,114 @@ function Reroll() {
   );
 }
 
+function CloseChevron() {
+  return (
+    <svg
+      width='24'
+      height='25'
+      viewBox='0 0 24 25'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M5.29289 5.79289C5.68342 5.40237 6.31658 5.40237 6.70711 5.79289L12 11.0858L17.2929 5.79289C17.6834 5.40237 18.3166 5.40237 18.7071 5.79289C19.0976 6.18342 19.0976 6.81658 18.7071 7.20711L13.4142 12.5L18.7071 17.7929C19.0976 18.1834 19.0976 18.8166 18.7071 19.2071C18.3166 19.5976 17.6834 19.5976 17.2929 19.2071L12 13.9142L6.70711 19.2071C6.31658 19.5976 5.68342 19.5976 5.29289 19.2071C4.90237 18.8166 4.90237 18.1834 5.29289 17.7929L10.5858 12.5L5.29289 7.20711C4.90237 6.81658 4.90237 6.18342 5.29289 5.79289Z'
+        fill='#A8A29E'
+      />
+    </svg>
+  );
+}
+
+function VisitWebsite({ url, className }: { url: string; className: string }) {
+  const [open, setIsOpen] = useState(false);
+
+  const [isDontShowAgainChecked, setIsDontShowAgainChecked] = useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setIsOpen(false);
+      return;
+    }
+
+    // Check if popup is necessary
+    const dontShowWarningAgain =
+      localStorage.getItem('dont-show-warning-again') === '1' ?? false;
+
+    if (dontShowWarningAgain) {
+      window.open(url, '_blank');
+      return;
+    }
+
+    setIsOpen(true);
+  };
+
+  const handleContinue = () => {
+    if (isDontShowAgainChecked) {
+      localStorage.setItem('dont-show-warning-again', '1');
+    }
+
+    // todo: get rid of fade animation when closing
+    setIsOpen(false);
+    window.open(url, '_blank');
+  };
+
+  return (
+    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
+      <Dialog.Trigger className={className}>
+        Visit website <ExternalLink />
+      </Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay className='inset-0 fixed bg-black opacity-50' />
+        <Dialog.Content className='DialogContent xl:w-[525px] fixed top-1/2 z-50 -translate-y-1/2 left-7 right-7 md:left-1/2 md:-translate-x-1/2 bg-gray-950 px-7 py-8 rounded-3xl gap-4 flex flex-col border border-gray-900'>
+          <div className='flex items-center justify-between'>
+            <Dialog.Title className='text-2xl text-white xl:text-3xl'>
+              Warning
+            </Dialog.Title>
+            <Dialog.Close>
+              <CloseChevron />
+            </Dialog.Close>
+          </div>
+          <Dialog.Description asChild>
+            <div className='flex flex-col gap-4'>
+              <p className='xl:text-lg xl:mt-2'>
+                We have made our best effort to filter out any adult or illegal
+                content; however, we aren’t able to review every page we index
+              </p>
+              <span className='font-bold xl:text-lg'>
+                Continue at your discretion
+              </span>
+            </div>
+          </Dialog.Description>
+          <div className='flex gap-3 items-center'>
+            <input
+              type='checkbox'
+              className='border w-5 h-5 border-gray-500 checked:bg-accent appearance-none rounded'
+              id='dont-show-again'
+              value={isDontShowAgainChecked ? '1' : '0'}
+              onChange={(e) => setIsDontShowAgainChecked(e.target.checked)}
+            />
+            <label className='xl:text-lg select-none' htmlFor='dont-show-again'>
+              Don't show this again
+            </label>
+          </div>
+          <div className='flex flex-col gap-2 xl:mt-2 xl:flex-row-reverse'>
+            <button
+              className='bg-[#8500EF] rounded border py-3 border-[#BF6FFE] xl:flex-1'
+              onClick={handleContinue}
+            >
+              Continue
+            </button>
+            <Dialog.Close className='bg-gray-900 py-3 rounded border border-gray-700 xl:flex-1'>
+              Cancel
+            </Dialog.Close>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+
 async function getURL() {
   try {
     const page = await fetch('/api/v1/page');
@@ -71,23 +183,189 @@ async function getURL() {
   }
 }
 
-function ScrollAnimation({
+function DesktopScrollAnimation({
+  onReroll,
   url,
-  onRerender,
 }: {
+  onReroll: () => void;
   url: string;
-  onRerender: () => void;
 }) {
-  const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
+  const urlWithoutWWW = url.replace('www.', '');
+  const urlWithoutProtocol = urlWithoutWWW.replace(/(^\w+:|^)\/\//, '');
+  const domain = urlWithoutProtocol.split('/')[0];
+
+  const targetRef = useRef<HTMLDivElement>(null);
+
+  const wheelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.to('#wrapper', {
+      opacity: 1,
+      duration: 1,
+    });
+
+    if (!wheelRef.current || !targetRef.current) return;
+
+    const tickerMarker = document.getElementById('ticker-marker');
+    const tickerWrapper = document.getElementById('ticker-wrapper');
+
+    if (tickerMarker === null || tickerWrapper === null) return;
+
+    const tickerMarkerTop = tickerMarker.getBoundingClientRect().top;
+    const tickerWrapperTop = tickerWrapper.getBoundingClientRect().top;
+
+    const topPositionDifference = tickerMarkerTop - tickerWrapperTop;
+
+    const scrollToPosition =
+      targetRef.current.offsetTop - topPositionDifference;
+
+    gsap.to(wheelRef.current, {
+      scrollTo: scrollToPosition,
+      duration: 10,
+      ease: CustomEase.create(
+        'custom',
+        'M0,0 C0.126,0.382 0.168,0.674 0.326,0.822 0.518,1.002 0.95,1.005 1,1'
+      ),
+      delay: 0,
+      onComplete: () => {
+        gsap.to(targetRef.current, {
+          color: '#C580FC',
+          duration: 1,
+        });
+
+        const searchingLinksText = document.getElementById('searching-links');
+        if (!searchingLinksText) return;
+
+        gsap.to(searchingLinksText, {
+          opacity: 0,
+          delay: 0.25,
+          duration: 1,
+          onComplete: () => {
+            searchingLinksText.style.display = 'none';
+
+            const elements = document.querySelectorAll('.found-link');
+
+            elements.forEach((element) => {
+              element.classList.remove('found-link');
+            });
+
+            gsap.to(elements, {
+              opacity: 1,
+              duration: 1,
+            });
+          },
+        });
+      },
+    });
+  }, [targetRef.current, wheelRef.current]);
+
+  return (
+    <div
+      id='wrapper'
+      className='opacity-0 flex w-screen justify-center gap-5 xl:gap-28 fixed top-1/2 -translate-y-1/2'
+    >
+      <div
+        id='text-wrapper'
+        className='flex items-left gap-6 w-[480px] justify-center flex-col'
+      >
+        <h1 id='searching-links' className='text-5xl'>
+          Searching links...
+        </h1>
+        <div className='flex flex-col gap-2 found-link opacity-0'>
+          <h1 className='text-4xl'>Found the perfect link</h1>
+          <p
+            className='text-2xl text-ellipsis overflow-clip'
+            style={{ color: '#A8A29E' }}
+          >
+            {urlWithoutProtocol}
+          </p>
+        </div>
+        <div className='flex flex-col gap-3 found-link opacity-0'>
+          <VisitWebsite
+            url={url}
+            className='text-lg rounded-lg justify-between items-center py-4 px-9 flex w-[450px] bg-[#8500EF] border border-[#BF6FFE] border-solid'
+          />
+          <button
+            onClick={onReroll}
+            className='text-lg px-9 py-4 rounded-lg flex w-[450px] bg-gray-900 border border-gray-700 justify-between items-center'
+          >
+            Reroll <Reroll />
+          </button>
+        </div>
+      </div>
+      <div className='flex items-center gap-12 text-3xl'>
+        <div className='fade-out' id='ticker-marker'>
+          <ChevronRight scale={1.15} />
+        </div>
+        <div className='relative'>
+          <div
+            className='fade-out absolute top-0 pointer-events-none left-0 right-0 bottom-0 z-10'
+            id='ticker-wrapper'
+            style={{
+              background:
+                'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
+            }}
+          />
+          <div
+            ref={wheelRef}
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative'
+          >
+            {Array.from({ length: 250 }).map((_, index) => (
+              <TextWheelElement
+                className='text-4xl pointer-events-none select-none'
+                key={index}
+              />
+            ))}
+            <div className='flex flex-col w-full gap-4' ref={targetRef}>
+              <p className='text-4xl pointer-events-none select-none'>
+                {domain}
+              </p>
+            </div>
+            {Array.from({ length: 25 }).map((_, index) => (
+              <TextWheelElement
+                className='text-4xl pointer-events-none select-none'
+                key={index}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const generateRandomNumber = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const getRandomArrayElement = (arr: string[]) => {
+  const index = generateRandomNumber(0, arr.length - 1);
+  return arr[index];
+};
+
+type Props = {
+  url: string;
+  onReroll: () => void;
+};
+
+function TextWheelElement({ className }: { className: string }) {
+  const [domain] = useState(getRandomArrayElement(PLACEHOLDER_DOMAINS));
+
+  return <div className={className}>{domain}</div>;
+}
+
+function MobileScrollAnimation({ url, onReroll }: Props) {
+  const urlWithoutWWW = url.replace('www.', '');
+  const urlWithoutProtocol = urlWithoutWWW.replace(/(^\w+:|^)\/\//, '');
+  const domain = urlWithoutProtocol.split('/')[0];
 
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
-  // const buttonsWrapperRef = useRef<HTMLDivElement>(null);
-  const buttonsRef = useRef<HTMLDivElement>(null);
-  const [hasCompletedAnimation, setHasCompletedAnimation] = useState(false);
+
+  const [searchText] = useState(getRandomArrayElement(SEARCHING_TEXT));
+  const [randomNumberOfTextElements] = useState(generateRandomNumber(250, 300));
 
   useEffect(() => {
-    if (hasCompletedAnimation) return;
     if (!ref.current || !targetRef.current) return;
 
     const tickerMarker = document.getElementById('ticker-marker');
@@ -117,18 +395,17 @@ function ScrollAnimation({
       ),
       delay: 0,
       onComplete: () => {
+        const textElement = document.getElementById('target-domain');
+
         gsap.to('.fade-out', {
           opacity: 0,
           delay: 0.25,
           duration: 1,
           ease: 'expo.out',
-          onComplete: () => {
-            setHasCompletedAnimation(true);
-          },
         });
 
         setTimeout(() => {
-          if (targetRef.current && ref.current && buttonsRef.current) {
+          if (targetRef.current && ref.current) {
             const state = Flip.getState(targetRef.current);
 
             targetRef.current.style.left = '36px';
@@ -141,10 +418,10 @@ function ScrollAnimation({
               duration: 1,
               ease: 'power1.out',
               onComplete: () => {
-                gsap.to(buttonsRef.current, {
-                  opacity: 1,
-                  duration: 0.5,
+                gsap.to(textElement, {
+                  text: urlWithoutProtocol,
                   ease: 'power1.inOut',
+                  duration: 1,
                 });
               },
             });
@@ -164,15 +441,14 @@ function ScrollAnimation({
         }, 1250 + 750);
       },
     });
-  }, [hasCompletedAnimation, ref.current, targetRef.current]);
+  }, [ref.current, targetRef.current]);
 
   const handleReroll = () => {
-    // fade-out everything & reset the page
     gsap.to('#wrapper', {
       opacity: 0,
       duration: 1,
       onComplete: () => {
-        onRerender();
+        onReroll();
       },
     });
   };
@@ -184,14 +460,14 @@ function ScrollAnimation({
         className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
       >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
-          <span>Finding you the perfect link</span>
+          <span>{searchText}</span>
           <span>.</span>
           <span>.</span>
           <span>.</span>
         </h3>
         <div className='flex items-center gap-8 mx-auto text-3xl'>
           <div className='fade-out' id='ticker-marker'>
-            <ChevronRight />
+            <ChevronRight scale={1} />
           </div>
           <div className='relative'>
             <div
@@ -206,324 +482,41 @@ function ScrollAnimation({
               ref={ref}
               className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative'
             >
-              <p className='fade-out text-3xl'>google.com</p>
-              <p className='fade-out text-3xl'>thisisit.com</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>google.com</p>
-              <p className='fade-out text-3xl'>thisisit.com</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <div className='flex flex-col w-full gap-4' ref={targetRef}>
-                <p className='text-3xl'>{urlWithoutProtocol}</p>
+              {Array.from({ length: randomNumberOfTextElements }).map(
+                (_, index) => (
+                  <TextWheelElement
+                    key={index}
+                    className='fade-out text-3xl pointer-events-none select-none'
+                  />
+                )
+              )}
+              <div
+                className='flex flex-col w-full gap-4 max-w-[90vw]'
+                ref={targetRef}
+              >
+                <p
+                  id='target-domain'
+                  className='text-3xl text-ellipsis overflow-clip'
+                >
+                  {domain}
+                </p>
               </div>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
-              <p className='fade-out text-3xl'>coursera.org</p>
+              {Array.from({ length: 20 }).map((_, index) => (
+                <TextWheelElement
+                  key={index}
+                  className='fade-out text-3xl pointer-events-none select-none'
+                />
+              ))}
             </div>
           </div>
-
-          <div
-            className='flex flex-col gap-2 w-full absolute left-0 right-0 px-12 opacity-0'
-            ref={buttonsRef}
-          ></div>
         </div>
 
         <div className='fixed top-[calc(64px_+_54px)] left-0 opacity-0 fade-in flex-col gap-2 w-full px-9'>
-          <a
-            href={url}
-            target='_blank'
+          <VisitWebsite
+            url={url}
+            // target='_blank'
             className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
-          >
-            Visit website <ExternalLink />
-          </a>
+          ></VisitWebsite>
           <button
             onClick={handleReroll}
             className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
@@ -558,7 +551,17 @@ export function FindURL() {
   const url = useURL();
   const [key, rerender] = useState(Math.random());
 
-  if (!url) {
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+
+    window.addEventListener('resize', () => {
+      setWindowWidth(window.innerWidth);
+    });
+  }, []);
+
+  if (!url || typeof windowWidth !== 'number') {
     return (
       <div className='fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'>
         <Spinner />
@@ -570,5 +573,11 @@ export function FindURL() {
     rerender(Math.random());
   };
 
-  return <ScrollAnimation key={key} url={url} onRerender={handleReroll} />;
+  if (windowWidth > 968) {
+    return (
+      <DesktopScrollAnimation url={url} onReroll={handleReroll} key={key} />
+    );
+  }
+
+  return <MobileScrollAnimation key={key} url={url} onReroll={handleReroll} />;
 }
