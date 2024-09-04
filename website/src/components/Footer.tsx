@@ -47,7 +47,7 @@ export function Footer() {
       </a>
       <Dialog.Root>
         <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 z-40' />
-        <Dialog.Content className='flex flex-col gap-3 p-6 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-3xl border border-gray-900'>
+        <Dialog.Content className='flex flex-col gap-3 px-6 py-8 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-3xl border border-gray-900'>
           <div className='flex justify-between'>
             <Dialog.Title className='text-3xl text-white'>
               I{"'"}m glad!
@@ -64,7 +64,7 @@ export function Footer() {
                 <a
                   href='https://nbaron.com'
                   target='_blank'
-                  className='underline'
+                  className='underline text-accent'
                 >
                   nbaron.com
                 </a>
@@ -74,7 +74,7 @@ export function Footer() {
                 for my work{' '}
                 <a
                   href='https://buymeacoffee.com/noahbaron'
-                  className='underline'
+                  className='underline text-accent'
                   target='_blank'
                 >
                   you can buy me a coffee
@@ -87,7 +87,7 @@ export function Footer() {
           </Dialog.Description>
           <Dialog.Close
             type='button'
-            className='mt-3 bg-gray-900 border border-gray-700 rounded w-52 py-3'
+            className='mt-3 bg-gray-900 border border-gray-700 rounded w-40 py-3'
           >
             Close
           </Dialog.Close>

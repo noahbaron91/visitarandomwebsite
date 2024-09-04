@@ -215,6 +215,14 @@ function DesktopScrollAnimation({
   );
 }
 
+const SEARCHING_TEXT = ['Finding you the perfect link', 'Searching URLS'];
+
+const generateRandomSearchingText = () => {
+  const index = Math.floor(Math.random() * SEARCHING_TEXT.length);
+  console.log(index);
+  return SEARCHING_TEXT[index];
+};
+
 function MobileScrollAnimation({
   url,
   onReroll,
@@ -227,6 +235,9 @@ function MobileScrollAnimation({
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
+
+  const [searchText] = useState(generateRandomSearchingText());
+  console.log(searchText);
 
   useEffect(() => {
     if (!ref.current || !targetRef.current) return;
@@ -321,7 +332,7 @@ function MobileScrollAnimation({
         className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
       >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
-          <span>Finding you the perfect link</span>
+          <span>{searchText}</span>
           <span>.</span>
           <span>.</span>
           <span>.</span>
