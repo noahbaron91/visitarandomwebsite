@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { getRandomArrayElement } from './FindURL';
+import { PLACEHOLDER_DOMAINS } from '../constants';
 
 export function Carousel({ top }: { top: number }) {
-  //   const initialLeft = ;
-  //   console.log({ initialLeft });
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [left, setLeft] = useState(-(Math.random() * 1000));
 
@@ -23,7 +23,7 @@ export function Carousel({ top }: { top: number }) {
     const interval = setInterval(() => {
       const p = document.createElement('p');
       p.className = 'url';
-      p.innerText = 'google.com';
+      p.innerText = getRandomArrayElement(PLACEHOLDER_DOMAINS);
       carouselRef.current?.appendChild(p);
     }, 2000);
 

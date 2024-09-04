@@ -1,8 +1,6 @@
 import { Carousel } from './Carousel';
 
 export function TextComponents() {
-  const url = 'thisisit.com';
-
   return (
     <>
       <Carousel top={0} />
@@ -24,31 +22,6 @@ export function TextComponents() {
       <Carousel top={800} />
       <Carousel top={850} />
       <Carousel top={900} />
-      {/* <Carousel top={800} /> */}
-      {/* <div
-        style={{ top: 300, left: left - 50 }}
-        className=' fixed text-gray-700 text-3xl cursor-default'
-      >
-        <HighlightOnHoverText text={url} />
-      </div>
-      <div
-        style={{ top: 300, left: left - 50 }}
-        className=' fixed text-gray-700 text-3xl cursor-default'
-      >
-        <HighlightOnHoverText text={url} />
-      </div>
-      <div
-        style={{ top: 250, left: left - 100 }}
-        className=' fixed text-gray-700 text-3xl cursor-default'
-      >
-        <HighlightOnHoverText text={url} />
-      </div>
-      <div
-        style={{ top: 200, left: left }}
-        className=' fixed text-gray-700 text-3xl cursor-default'
-      >
-        <HighlightOnHoverText text={url} />
-      </div> */}
     </>
   );
 }

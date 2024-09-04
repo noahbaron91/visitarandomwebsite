@@ -338,7 +338,7 @@ const generateRandomNumber = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const getRandomArrayElement = (arr: string[]) => {
+export const getRandomArrayElement = (arr: string[]) => {
   const index = generateRandomNumber(0, arr.length - 1);
   return arr[index];
 };
