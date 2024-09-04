@@ -147,7 +147,7 @@ function DesktopScrollAnimation({
   return (
     <div
       id='wrapper'
-      className='opacity-0 flex w-screen justify-center gap-28 fixed top-1/2 -translate-y-1/2'
+      className='opacity-0 flex w-screen justify-center gap-5 xl:gap-28 fixed top-1/2 -translate-y-1/2'
     >
       <div
         id='text-wrapper'
@@ -318,7 +318,7 @@ function MobileScrollAnimation({
     <>
       <div
         id='wrapper'
-        className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-fit'
+        className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
       >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
           <span>Finding you the perfect link</span>
@@ -719,7 +719,7 @@ export function FindURL() {
 
   console.log(windowWidth);
 
-  if (windowWidth > 768) {
+  if (windowWidth > 968) {
     return (
       <DesktopScrollAnimation url={url} onReroll={handleReroll} key={key} />
     );
