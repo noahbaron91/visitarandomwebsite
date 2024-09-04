@@ -42,7 +42,7 @@ function HomePage() {
             <div className='flex flex-col gap-3 items-center'>
               <button
                 type='button'
-                className='pointer-events-auto py-3 px-9 text-lg bg-gray-900 rounded-lg border border-gray-700'
+                className='pointer-events-auto py-3 px-9 text-xl bg-gray-900 rounded-lg border border-gray-700'
                 onClick={handleClick}
                 onMouseEnter={() => setIsHoveringButton(true)}
                 onMouseLeave={() => setIsHoveringButton(false)}

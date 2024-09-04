@@ -5,7 +5,7 @@ import { CustomEase } from 'gsap/all';
 
 gsap.registerPlugin(Flip, CustomEase);
 
-function ChevronRight() {
+function ChevronRight({ scale }: { scale: number }) {
   return (
     <svg
       width='17'
@@ -13,6 +13,7 @@ function ChevronRight() {
       viewBox='0 0 17 33'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      style={{ transform: `scale(${scale})` }}
     >
       <path
         d='M16.4736 16.5L0.368359 32.0885L0.368359 0.911543L16.4736 16.5Z'
@@ -71,23 +72,163 @@ async function getURL() {
   }
 }
 
-function ScrollAnimation({
+function DesktopScrollAnimation({
+  onReroll,
   url,
-  onRerender,
+}: {
+  onReroll: () => void;
+  url: string;
+}) {
+  const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
+  const targetRef = useRef<HTMLParagraphElement>(null);
+
+  const wheelRef = useRef<HTMLDivElement>(null);
+
+  // roll the wheel
+  // on stop fade the text out and the fade the "Found the perfect link" in
+  // reroll the wheel
+
+  useEffect(() => {
+    gsap.to('#wrapper', {
+      opacity: 1,
+      duration: 1,
+    });
+
+    if (!wheelRef.current || !targetRef.current) return;
+
+    const tickerMarker = document.getElementById('ticker-marker');
+    const tickerWrapper = document.getElementById('ticker-wrapper');
+
+    if (tickerMarker === null || tickerWrapper === null) return;
+
+    const tickerMarkerTop = tickerMarker.getBoundingClientRect().top;
+    const tickerWrapperTop = tickerWrapper.getBoundingClientRect().top;
+
+    const topPositionDifference = tickerMarkerTop - tickerWrapperTop;
+
+    const scrollToPosition =
+      targetRef.current.offsetTop - topPositionDifference;
+
+    gsap.to(wheelRef.current, {
+      scrollTo: scrollToPosition,
+      duration: 10,
+      ease: CustomEase.create(
+        'custom',
+        'M0,0 C0.126,0.382 0.168,0.674 0.326,0.822 0.518,1.002 0.95,1.005 1,1'
+      ),
+      delay: 0,
+      onComplete: () => {
+        const searchingLinksText = document.getElementById('searching-links');
+        if (!searchingLinksText) return;
+
+        gsap.to(searchingLinksText, {
+          opacity: 0,
+          delay: 0.25,
+          duration: 1,
+          onComplete: () => {
+            searchingLinksText.style.display = 'none';
+
+            const elements = document.querySelectorAll('.found-link');
+
+            elements.forEach((element) => {
+              element.classList.remove('found-link');
+            });
+
+            gsap.to(elements, {
+              opacity: 1,
+              duration: 1,
+            });
+          },
+        });
+      },
+    });
+  }, []);
+
+  return (
+    <div
+      id='wrapper'
+      className='opacity-0 flex w-screen justify-center gap-28 fixed top-1/2 -translate-y-1/2'
+    >
+      <div
+        id='text-wrapper'
+        className='flex items-left gap-6 w-[480px] justify-center flex-col'
+      >
+        <h1 id='searching-links' className='text-5xl'>
+          Searching links...
+        </h1>
+        <div className='flex flex-col gap-2 found-link opacity-0'>
+          <h1 className='text-4xl'>Found the perfect link</h1>
+          <p className='text-2xl' style={{ color: '#A8A29E' }}>
+            https://example.com/path-1/slug
+          </p>
+        </div>
+        <div className='flex flex-col gap-3 found-link opacity-0'>
+          <a
+            href='https://example.com'
+            target='_blank'
+            className='text-lg rounded-lg justify-between items-center py-4 px-9 flex w-[450px] bg-[#8500EF] border border-[#BF6FFE] border-solid'
+          >
+            Visit website <ExternalLink />
+          </a>
+          <button
+            onClick={onReroll}
+            className='text-lg px-9 py-4 rounded-lg flex w-[450px] bg-gray-900 border border-gray-700 justify-between items-center'
+          >
+            Reroll <Reroll />
+          </button>
+        </div>
+      </div>
+      <div className='flex items-center gap-12 text-3xl'>
+        <div className='fade-out' id='ticker-marker'>
+          <ChevronRight scale={1.15} />
+        </div>
+        <div className='relative'>
+          <div
+            className='fade-out absolute top-0 pointer-events-none left-0 right-0 bottom-0 z-10'
+            id='ticker-wrapper'
+            style={{
+              background:
+                'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
+            }}
+          />
+          <div
+            ref={wheelRef}
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative'
+          >
+            {Array.from({ length: 250 }).map((_, index) => (
+              <p className='text-4xl' key={index}>
+                google.com
+              </p>
+            ))}
+            <div className='flex flex-col w-full gap-4' ref={targetRef}>
+              <p className='text-4xl'>{urlWithoutProtocol}</p>
+            </div>
+            {Array.from({ length: 25 }).map((_, index) => (
+              <p className='text-4xl' key={index}>
+                coursera.com
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MobileScrollAnimation({
+  url,
+  onReroll,
 }: {
   url: string;
-  onRerender: () => void;
+  onReroll: () => void;
 }) {
   const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
 
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
-  // const buttonsWrapperRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
-  const [hasCompletedAnimation, setHasCompletedAnimation] = useState(false);
 
   useEffect(() => {
-    if (hasCompletedAnimation) return;
     if (!ref.current || !targetRef.current) return;
 
     const tickerMarker = document.getElementById('ticker-marker');
@@ -122,9 +263,6 @@ function ScrollAnimation({
           delay: 0.25,
           duration: 1,
           ease: 'expo.out',
-          onComplete: () => {
-            setHasCompletedAnimation(true);
-          },
         });
 
         setTimeout(() => {
@@ -164,15 +302,14 @@ function ScrollAnimation({
         }, 1250 + 750);
       },
     });
-  }, [hasCompletedAnimation, ref.current, targetRef.current]);
+  }, [ref.current, targetRef.current]);
 
   const handleReroll = () => {
-    // fade-out everything & reset the page
     gsap.to('#wrapper', {
       opacity: 0,
       duration: 1,
       onComplete: () => {
-        onRerender();
+        onReroll();
       },
     });
   };
@@ -181,7 +318,7 @@ function ScrollAnimation({
     <>
       <div
         id='wrapper'
-        className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
+        className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-fit'
       >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
           <span>Finding you the perfect link</span>
@@ -191,7 +328,7 @@ function ScrollAnimation({
         </h3>
         <div className='flex items-center gap-8 mx-auto text-3xl'>
           <div className='fade-out' id='ticker-marker'>
-            <ChevronRight />
+            <ChevronRight scale={1} />
           </div>
           <div className='relative'>
             <div
@@ -558,7 +695,17 @@ export function FindURL() {
   const url = useURL();
   const [key, rerender] = useState(Math.random());
 
-  if (!url) {
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+
+    window.addEventListener('resize', () => {
+      setWindowWidth(window.innerWidth);
+    });
+  }, []);
+
+  if (!url || typeof windowWidth !== 'number') {
     return (
       <div className='fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2'>
         <Spinner />
@@ -570,5 +717,13 @@ export function FindURL() {
     rerender(Math.random());
   };
 
-  return <ScrollAnimation key={key} url={url} onRerender={handleReroll} />;
+  console.log(windowWidth);
+
+  if (windowWidth > 768) {
+    return (
+      <DesktopScrollAnimation url={url} onReroll={handleReroll} key={key} />
+    );
+  }
+
+  return <MobileScrollAnimation key={key} url={url} onReroll={handleReroll} />;
 }
