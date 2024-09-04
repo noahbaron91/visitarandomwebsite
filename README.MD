@@ -1,1 +1,1 @@
-Visit a Random Website sends you to a random page on the internet
+visitarandomwebsite.com sends you to a random page on the internet
