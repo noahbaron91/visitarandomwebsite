@@ -96,7 +96,7 @@ function VisitWebsite({ url, className }: { url: string; className: string }) {
 
     // Check if popup is necessary
     const dontShowWarningAgain =
-      localStorage.getItem('dont-show-warning-again') === '1' ?? false;
+      localStorage.getItem('dont-show-warning-again') === '1';
 
     if (dontShowWarningAgain) {
       window.open(url, '_blank');
@@ -274,7 +274,7 @@ function DesktopScrollAnimation({
         <div className='flex flex-col gap-2 found-link opacity-0'>
           <h1 className='text-4xl'>Found the perfect link</h1>
           <p
-            className='text-2xl text-ellipsis overflow-clip'
+            className='text-2xl text-ellipsis overflow-clip text-nowrap'
             style={{ color: '#A8A29E' }}
           >
             {urlWithoutProtocol}
