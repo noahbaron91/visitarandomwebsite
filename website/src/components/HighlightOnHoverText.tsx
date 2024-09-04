@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSpotlight } from './Spotlight';
 import { useIsHoveringButton } from '../context/IsHoveringButton';
 
@@ -17,7 +17,7 @@ function Letter({
 
   useEffect(() => {
     if (!ref.current) return;
-
+    console.log('calculating');
     const boundingBoxRect = ref.current.getBoundingClientRect();
 
     const { top, left, right, bottom } = boundingBoxRect;
@@ -35,26 +35,23 @@ function Letter({
     setIsHighlighted(true);
   }, [spotlight.left, spotlight.right, spotlight.top, spotlight.bottom]);
 
+  const style = useMemo(() => {
+    return {
+      ...(isHighlighted &&
+        (ignoreIsHoveringButton || !isHoveringButton) && { color: '#c580fc' }),
+    };
+  }, [ignoreIsHoveringButton, isHighlighted, isHoveringButton]);
+
   if (ignoreIsHoveringButton) {
     return (
-      <span
-        ref={ref}
-        style={{
-          ...(isHighlighted && { color: '#c580fc' }),
-        }}
-      >
+      <span ref={ref} style={style}>
         {value}
       </span>
     );
   }
 
   return (
-    <span
-      ref={ref}
-      style={{
-        ...(isHighlighted && !isHoveringButton && { color: '#c580fc' }),
-      }}
-    >
+    <span ref={ref} style={style}>
       {value}
     </span>
   );
@@ -67,7 +64,7 @@ export function HighlightOnHoverText({
   text: string;
   ignoreIsHoveringButton?: boolean;
 }) {
-  const textArr = text.split('');
+  const textArr = useMemo(() => text.split(''), [text]);
 
   return (
     <>
