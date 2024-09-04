@@ -48,7 +48,7 @@ export function Footer() {
       </a>
       <Dialog.Root>
         <Dialog.Overlay className='fixed inset-0 bg-black bg-opacity-50 z-40' />
-        <Dialog.Content className='flex flex-col gap-3 px-6 py-8 fixed top-1/2 -translate-y-1/2 left-4 right-4 z-50 bg-gray-950 rounded-3xl border border-gray-900'>
+        <Dialog.Content className='DialogContent xl:w-[525px] fixed top-1/2 z-50 -translate-y-1/2 left-7 right-7 md:left-1/2 md:-translate-x-1/2 bg-gray-950 px-7 py-8 rounded-3xl gap-4 flex flex-col border border-gray-900'>
           <div className='flex justify-between'>
             <Dialog.Title className='text-3xl text-white'>
               I{"'"}m glad!
@@ -59,9 +59,9 @@ export function Footer() {
           </div>
 
           <Dialog.Description asChild>
-            <div className='flex gap-3 flex-col'>
+            <div className='xl:text-lg flex gap-3 flex-col'>
               <p>
-                You can view a list of my projects on{' '}
+                You can view a full list of my projects on{' '}
                 <a
                   href='https://nbaron.com'
                   target='_blank'
@@ -88,7 +88,7 @@ export function Footer() {
           </Dialog.Description>
           <Dialog.Close
             type='button'
-            className='mt-3 bg-gray-900 border border-gray-700 rounded w-40 py-3'
+            className='mt-3 bg-gray-900 border border-gray-700 rounded py-3'
           >
             Close
           </Dialog.Close>

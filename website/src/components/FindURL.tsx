@@ -123,7 +123,7 @@ function VisitWebsite({ url, className }: { url: string; className: string }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className='inset-0 fixed bg-black opacity-50' />
-        <Dialog.Content className='DialogContent xl:w-[525px] fixed top-1/2 -translate-y-1/2 left-7 right-7 md:left-1/2 md:-translate-x-1/2 bg-gray-950 px-7 py-8 rounded-3xl gap-4 flex flex-col border border-gray-900'>
+        <Dialog.Content className='DialogContent xl:w-[525px] fixed top-1/2 z-50 -translate-y-1/2 left-7 right-7 md:left-1/2 md:-translate-x-1/2 bg-gray-950 px-7 py-8 rounded-3xl gap-4 flex flex-col border border-gray-900'>
           <div className='flex items-center justify-between'>
             <Dialog.Title className='text-2xl text-white xl:text-3xl'>
               Warning
@@ -138,7 +138,7 @@ function VisitWebsite({ url, className }: { url: string; className: string }) {
                 We have made our best effort to filter out any adult or illegal
                 content; however, we aren’t able to review every page we index
               </p>
-              <span className='underline xl:text-lg'>
+              <span className='font-bold xl:text-lg'>
                 Continue at your discretion
               </span>
             </div>

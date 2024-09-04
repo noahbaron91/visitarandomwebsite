@@ -52,7 +52,7 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
         <div
           style={{
             position: 'fixed',
-            zIndex: 999,
+            zIndex: 30,
             pointerEvents: 'none',
             top: mousePositionY - BLOB_SIZE / 2,
             left: mousePositionX - BLOB_SIZE / 2,
