@@ -25,12 +25,7 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
   const [mousePositionX, setMousePositionX] = useState(0);
   const [mousePositionY, setMousePositionY] = useState(0);
 
-  const [stretchX, setStretchX] = useState(1);
-  const [stretchY, setStretchY] = useState(1);
-
-  const cancelTimeoutRef = useRef<null | NodeJS.Timeout>(null);
   const { isHoveringButton } = useIsHoveringButton();
-  // calculate movement speed and stretch the spotlight
 
   useEffect(() => {
     window.addEventListener('mousemove', (event) => {
@@ -50,10 +45,9 @@ export function Spotlight({ children }: { children: React.ReactNode }) {
     >
       {!isHoveringButton && (
         <div
+          className='fixed pointer-events-none'
           style={{
-            position: 'fixed',
             zIndex: 30,
-            pointerEvents: 'none',
             top: mousePositionY - BLOB_SIZE / 2,
             left: mousePositionX - BLOB_SIZE / 2,
             width: BLOB_SIZE,
