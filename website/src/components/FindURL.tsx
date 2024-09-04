@@ -80,7 +80,7 @@ function DesktopScrollAnimation({
   url: string;
 }) {
   const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
-  const targetRef = useRef<HTMLParagraphElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null);
 
   const wheelRef = useRef<HTMLDivElement>(null);
 
@@ -118,6 +118,11 @@ function DesktopScrollAnimation({
       ),
       delay: 0,
       onComplete: () => {
+        gsap.to(targetRef.current, {
+          color: '#C580FC',
+          duration: 1,
+        });
+
         const searchingLinksText = document.getElementById('searching-links');
         if (!searchingLinksText) return;
 
@@ -142,7 +147,7 @@ function DesktopScrollAnimation({
         });
       },
     });
-  }, []);
+  }, [targetRef.current, wheelRef.current]);
 
   return (
     <div
@@ -219,7 +224,6 @@ const SEARCHING_TEXT = ['Finding you the perfect link', 'Searching URLS'];
 
 const generateRandomSearchingText = () => {
   const index = Math.floor(Math.random() * SEARCHING_TEXT.length);
-  console.log(index);
   return SEARCHING_TEXT[index];
 };
 
