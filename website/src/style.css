@@ -30,6 +30,10 @@ body {
   display: none !important;
 }
 
+.url {
+  user-select: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

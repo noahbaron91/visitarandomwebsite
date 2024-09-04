@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function Carousel({ top }: { top: number }) {
   //   const initialLeft = ;
@@ -15,6 +15,8 @@ export function Carousel({ top }: { top: number }) {
       clearInterval(interval);
     };
   }, []);
+
+  const style = useMemo(() => ({ top, left }), [top, left]);
 
   // Add elements infinitely to the carousel
   useEffect(() => {
@@ -34,7 +36,7 @@ export function Carousel({ top }: { top: number }) {
     <div
       ref={carouselRef}
       className='gap-4 flex items-center fixed text-gray-800 text-3xl cursor-default'
-      style={{ top, left }}
+      style={style}
     >
       <p className='url'>hello.com</p>
       <p className='url'>apple.com</p>
