@@ -59,13 +59,23 @@ export function Footer() {
 
           <Dialog.Description asChild>
             <div className='flex gap-3 flex-col'>
-              <p>You can view a list of my projects on nbaron.com</p>
+              <p>
+                You can view a list of my projects on{' '}
+                <a
+                  href='https://nbaron.com'
+                  target='_blank'
+                  className='underline'
+                >
+                  nbaron.com
+                </a>
+              </p>
               <p>
                 If you want to fund my future ideas or show your appreciation
                 for my work{' '}
                 <a
                   href='https://buymeacoffee.com/noahbaron'
                   className='underline'
+                  target='_blank'
                 >
                   you can buy me a coffee
                 </a>
