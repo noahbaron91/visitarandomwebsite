@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Flip } from 'gsap/Flip';
 import { CustomEase } from 'gsap/all';
+import { TextPlugin } from 'gsap/TextPlugin';
 
-gsap.registerPlugin(Flip, CustomEase);
+gsap.registerPlugin(Flip, CustomEase, TextPlugin);
 
 function ChevronRight({ scale }: { scale: number }) {
   return (
@@ -79,7 +80,10 @@ function DesktopScrollAnimation({
   onReroll: () => void;
   url: string;
 }) {
-  const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
+  const urlWithoutWWW = url.replace('www.', '');
+  const urlWithoutProtocol = urlWithoutWWW.replace(/(^\w+:|^)\/\//, '');
+  const domain = urlWithoutProtocol.split('/')[0];
+
   const targetRef = useRef<HTMLDivElement>(null);
 
   const wheelRef = useRef<HTMLDivElement>(null);
@@ -118,6 +122,8 @@ function DesktopScrollAnimation({
       ),
       delay: 0,
       onComplete: () => {
+        console.log({ domain, urlWithoutProtocol });
+
         gsap.to(targetRef.current, {
           color: '#C580FC',
           duration: 1,
@@ -163,8 +169,11 @@ function DesktopScrollAnimation({
         </h1>
         <div className='flex flex-col gap-2 found-link opacity-0'>
           <h1 className='text-4xl'>Found the perfect link</h1>
-          <p className='text-2xl' style={{ color: '#A8A29E' }}>
-            https://example.com/path-1/slug
+          <p
+            className='text-2xl text-ellipsis overflow-clip'
+            style={{ color: '#A8A29E' }}
+          >
+            {urlWithoutProtocol}
           </p>
         </div>
         <div className='flex flex-col gap-3 found-link opacity-0'>
@@ -206,7 +215,7 @@ function DesktopScrollAnimation({
               </p>
             ))}
             <div className='flex flex-col w-full gap-4' ref={targetRef}>
-              <p className='text-4xl'>{urlWithoutProtocol}</p>
+              <p className='text-4xl'>{domain}</p>
             </div>
             {Array.from({ length: 25 }).map((_, index) => (
               <p className='text-4xl' key={index}>
@@ -234,7 +243,9 @@ function MobileScrollAnimation({
   url: string;
   onReroll: () => void;
 }) {
-  const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
+  const urlWithoutWWW = url.replace('www.', '');
+  const urlWithoutProtocol = urlWithoutWWW.replace(/(^\w+:|^)\/\//, '');
+  const domain = urlWithoutProtocol.split('/')[0];
 
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
@@ -273,6 +284,10 @@ function MobileScrollAnimation({
       ),
       delay: 0,
       onComplete: () => {
+        console.log({ domain, urlWithoutProtocol });
+
+        const textElement = document.getElementById('target-domain');
+
         gsap.to('.fade-out', {
           opacity: 0,
           delay: 0.25,
@@ -298,6 +313,12 @@ function MobileScrollAnimation({
                   opacity: 1,
                   duration: 0.5,
                   ease: 'power1.inOut',
+                });
+
+                gsap.to(textElement, {
+                  text: urlWithoutProtocol,
+                  ease: 'power1.inOut',
+                  duration: 1,
                 });
               },
             });
@@ -617,8 +638,16 @@ function MobileScrollAnimation({
               <p className='fade-out text-3xl'>coursera.org</p>
               <p className='fade-out text-3xl'>coursera.org</p>
               <p className='fade-out text-3xl'>coursera.org</p>
-              <div className='flex flex-col w-full gap-4' ref={targetRef}>
-                <p className='text-3xl'>{urlWithoutProtocol}</p>
+              <div
+                className='flex flex-col w-full gap-4 max-w-[90vw]'
+                ref={targetRef}
+              >
+                <p
+                  id='target-domain'
+                  className='text-3xl text-ellipsis overflow-clip'
+                >
+                  {domain}
+                </p>
               </div>
               <p className='fade-out text-3xl'>coursera.org</p>
               <p className='fade-out text-3xl'>coursera.org</p>
