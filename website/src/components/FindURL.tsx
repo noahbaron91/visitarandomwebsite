@@ -71,7 +71,13 @@ async function getURL() {
   }
 }
 
-function ScrollAnimation({ url }: { url: string }) {
+function ScrollAnimation({
+  url,
+  onRerender,
+}: {
+  url: string;
+  onRerender: () => void;
+}) {
   const urlWithoutProtocol = url?.replace(/(^\w+:|^)\/\//, '');
 
   const ref = useRef<HTMLDivElement>(null);
@@ -97,6 +103,11 @@ function ScrollAnimation({ url }: { url: string }) {
     const scrollToPosition =
       targetRef.current.offsetTop - topPositionDifference;
 
+    gsap.to('#wrapper', {
+      opacity: 1,
+      duration: 1,
+    });
+
     gsap.to(ref.current, {
       scrollTo: scrollToPosition,
       duration: 10,
@@ -119,6 +130,7 @@ function ScrollAnimation({ url }: { url: string }) {
         setTimeout(() => {
           if (targetRef.current && ref.current && buttonsRef.current) {
             const state = Flip.getState(targetRef.current);
+
             targetRef.current.style.left = '36px';
             targetRef.current.style.right = '0px';
             targetRef.current.style.top = '64px';
@@ -155,12 +167,22 @@ function ScrollAnimation({ url }: { url: string }) {
   }, [hasCompletedAnimation, ref.current, targetRef.current]);
 
   const handleReroll = () => {
-    window.location.reload();
+    // fade-out everything & reset the page
+    gsap.to('#wrapper', {
+      opacity: 0,
+      duration: 1,
+      onComplete: () => {
+        onRerender();
+      },
+    });
   };
 
   return (
     <>
-      <div className='fixed top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'>
+      <div
+        id='wrapper'
+        className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
+      >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
           <span>Finding you the perfect link</span>
           <span>.</span>
@@ -173,7 +195,7 @@ function ScrollAnimation({ url }: { url: string }) {
           </div>
           <div className='relative'>
             <div
-              className='fade-out absolute top-0 left-0 right-0 bottom-0 z-10'
+              className='fade-out absolute top-0 pointer-events-none left-0 right-0 bottom-0 z-10'
               id='ticker-wrapper'
               style={{
                 background:
@@ -534,6 +556,7 @@ function Spinner() {
 
 export function FindURL() {
   const url = useURL();
+  const [key, rerender] = useState(Math.random());
 
   if (!url) {
     return (
@@ -543,5 +566,9 @@ export function FindURL() {
     );
   }
 
-  return <ScrollAnimation url={url} />;
+  const handleReroll = () => {
+    rerender(Math.random());
+  };
+
+  return <ScrollAnimation key={key} url={url} onRerender={handleReroll} />;
 }
