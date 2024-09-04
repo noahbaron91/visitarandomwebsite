@@ -5,5 +5,23 @@
 body {
   font-family: 'Aileron', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  background-color: #000000;
+  background-color: black;
+  color: white;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.visit-website {
+  display: none;
+}
+
+.fade-in {
+  display: none;
 }

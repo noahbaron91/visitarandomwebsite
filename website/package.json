@@ -16,13 +16,23 @@
     "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.0",
     "@fontsource/aileron": "^5.0.11",
+    "@fontsource/fredoka-one": "^5.0.5",
+    "@gsap/react": "^2.1.1",
+    "@radix-ui/react-dialog": "^1.1.1",
+    "@react-three/drei": "^9.111.4",
+    "@react-three/fiber": "^8.17.6",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.167.2",
     "astro": "^4.14.5",
+    "framer-motion": "^11.3.31",
+    "gsap": "^3.12.5",
+    "leva": "^0.9.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sqlite3": "^5.1.7",
     "tailwindcss": "^3.4.10",
+    "three": "^0.167.1",
     "typescript": "^5.5.4"
   }
 }
