@@ -2,6 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { getRandomArrayElement } from './FindURL';
 import { PLACEHOLDER_DOMAINS } from '../constants';
 
+function CarouselItem() {
+  const [domain] = useState(getRandomArrayElement(PLACEHOLDER_DOMAINS));
+
+  return <p className='url'>{domain}</p>;
+}
+
 export function Carousel({ top }: { top: number }) {
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [left, setLeft] = useState(-(Math.random() * 1000));
@@ -38,37 +44,9 @@ export function Carousel({ top }: { top: number }) {
       className='gap-4 flex items-center fixed text-gray-800 text-3xl cursor-default'
       style={style}
     >
-      <p className='url'>hello.com</p>
-      <p className='url'>apple.com</p>
-      <p className='url'>microsoft.com</p>
-      <p className='url'>wendys.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>wendys.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>wendys.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>wendys.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
-      <p className='url'>hello.com</p>
+      {Array.from({ length: 25 }).map((_, index) => (
+        <CarouselItem key={index} />
+      ))}
     </div>
   );
 }
