@@ -363,7 +363,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
 
   const ref = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLParagraphElement>(null);
-  const buttonsRef = useRef<HTMLDivElement>(null);
 
   const [searchText] = useState(getRandomArrayElement(SEARCHING_TEXT));
   const [randomNumberOfTextElements] = useState(generateRandomNumber(250, 300));
@@ -410,7 +409,7 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
         });
 
         setTimeout(() => {
-          if (targetRef.current && ref.current && buttonsRef.current) {
+          if (targetRef.current && ref.current) {
             const state = Flip.getState(targetRef.current);
 
             targetRef.current.style.left = '36px';
@@ -423,12 +422,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
               duration: 1,
               ease: 'power1.out',
               onComplete: () => {
-                gsap.to(buttonsRef.current, {
-                  opacity: 1,
-                  duration: 0.5,
-                  ease: 'power1.inOut',
-                });
-
                 gsap.to(textElement, {
                   text: urlWithoutProtocol,
                   ease: 'power1.inOut',
@@ -520,11 +513,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
               ))}
             </div>
           </div>
-
-          <div
-            className='flex flex-col gap-2 w-full absolute left-0 right-0 px-12 opacity-0'
-            ref={buttonsRef}
-          ></div>
         </div>
 
         <div className='fixed top-[calc(64px_+_54px)] left-0 opacity-0 fade-in flex-col gap-2 w-full px-9'>
