@@ -9,29 +9,13 @@ const isValidURLPattern = (url: string) => {
   }
 };
 
-const isWebsiteAvailable = async (url: string) => {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
-  } catch {
-    return false;
-  }
-};
-
-const isValidURL = async (url: string) => {
-  const isValidPattern = isValidURLPattern(url);
-  // const isAvailable = await isWebsiteAvailable(url);
-
-  return isValidPattern;
-};
-
 const getURL = async (db: any, numberOfRows: number) => {
   const statement = await db.prepare(
     'SELECT * FROM page WHERE id = (ABS(RANDOM()) % (SELECT MAX(id) FROM page)) + 1 LIMIT 1'
   );
 
   const result = await statement.first();
-  console.log(result);
+
   if (!result) {
     return null;
   }
@@ -44,10 +28,10 @@ const getValidURL = async (db: any, numberOfRows: number) => {
 
   let tries = 0;
 
-  while (!(await isValidURL(url)) && tries < 10) {
+  while (!isValidURLPattern(url) && tries < 10) {
     try {
       url = await getURL(db, numberOfRows);
-      console.log({ url });
+
       tries++;
     } catch {
       tries++;
@@ -66,11 +50,7 @@ export const GET: APIRoute = async (ctx) => {
 
   const db = ctx.locals.runtime.env.DB;
 
-  // console.time('query');
-  console.log('is here 1');
   const validURL = await getValidURL(db, NUMBER_OF_ROWS);
-  // console.timeEnd('query');
-  console.log('is here 2');
 
   if (!validURL) {
     return new Response(

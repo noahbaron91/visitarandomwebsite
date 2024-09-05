@@ -259,6 +259,16 @@ function DesktopScrollAnimation({
     });
   }, [targetRef.current, wheelRef.current]);
 
+  const handleReroll = () => {
+    gsap.to('#wrapper', {
+      opacity: 0,
+      duration: 1,
+      onComplete: () => {
+        onReroll();
+      },
+    });
+  };
+
   return (
     <div
       id='wrapper'
@@ -286,7 +296,7 @@ function DesktopScrollAnimation({
             className='text-lg rounded-lg justify-between items-center py-4 px-9 flex w-[450px] bg-[#8500EF] border border-[#BF6FFE] border-solid'
           />
           <button
-            onClick={onReroll}
+            onClick={handleReroll}
             className='text-lg px-9 py-4 rounded-lg flex w-[450px] bg-gray-900 border border-gray-700 justify-between items-center'
           >
             Reroll <Reroll />
@@ -308,11 +318,11 @@ function DesktopScrollAnimation({
           />
           <div
             ref={wheelRef}
-            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative max-w-[500px]'
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative md:max-w-[350px] lg:max-w-[500px]'
           >
             {Array.from({ length: 250 }).map((_, index) => (
               <TextWheelElement
-                className='text-4xl overflow-ellipsis text-nowrap overflow-clip  pointer-events-none select-none'
+                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none'
                 key={index}
               />
             ))}
@@ -407,7 +417,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
         setTimeout(() => {
           if (targetRef.current && ref.current) {
             const state = Flip.getState(targetRef.current);
-
             targetRef.current.style.left = '36px';
             targetRef.current.style.right = '0px';
             targetRef.current.style.top = '64px';
@@ -432,7 +441,6 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
           document.querySelectorAll('.fade-in').forEach((element) => {
             (element as HTMLDivElement).style.display = 'flex';
           });
-
           gsap.to('.fade-in', {
             opacity: 1.5,
             duration: 1,
@@ -480,7 +488,7 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
             />
             <div
               ref={ref}
-              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative'
+              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[280px]'
             >
               {Array.from({ length: randomNumberOfTextElements }).map(
                 (_, index) => (
@@ -514,9 +522,8 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
         <div className='fixed top-[calc(64px_+_54px)] left-0 opacity-0 fade-in flex-col gap-2 w-full px-9'>
           <VisitWebsite
             url={url}
-            // target='_blank'
             className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
-          ></VisitWebsite>
+          />
           <button
             onClick={handleReroll}
             className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
@@ -548,8 +555,17 @@ function Spinner() {
 }
 
 export function FindURL() {
-  const url = useURL();
   const [key, rerender] = useState(Math.random());
+
+  const handleReroll = () => {
+    rerender(Math.random());
+  };
+
+  return <ScrollAnimation key={key} onReroll={handleReroll} />;
+}
+
+function ScrollAnimation({ onReroll }: { onReroll: () => void }) {
+  const url = useURL();
 
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
@@ -569,17 +585,11 @@ export function FindURL() {
     );
   }
 
-  const handleReroll = () => {
-    rerender(Math.random());
-  };
-
   if (windowWidth > 968) {
-    return (
-      <DesktopScrollAnimation url={url} onReroll={handleReroll} key={key} />
-    );
+    return <DesktopScrollAnimation url={url} onReroll={onReroll} />;
   }
 
-  return <MobileScrollAnimation key={key} url={url} onReroll={handleReroll} />;
+  return <MobileScrollAnimation url={url} onReroll={onReroll} />;
 }
 
 // min-width: 0px;

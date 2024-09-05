@@ -88,7 +88,7 @@ export function Footer() {
           </Dialog.Description>
           <Dialog.Close
             type='button'
-            className='mt-3 bg-gray-900 border border-gray-700 rounded py-3'
+            className='bg-gray-900 border border-gray-700 rounded py-3'
           >
             Close
           </Dialog.Close>
