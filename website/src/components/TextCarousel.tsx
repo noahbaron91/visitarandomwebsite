@@ -1,6 +1,6 @@
 import { Carousel } from './Carousel';
 
-export function TextComponents() {
+export function TextCarousel() {
   return (
     <>
       <Carousel top={0} />

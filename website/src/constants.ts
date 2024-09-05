@@ -363,3 +363,5 @@ export const SEARCHING_TEXT = [
   'Finding you the perfect link',
   'Searching URLS',
 ];
+
+export const SPOTLIGHT_SIZE = 75;
