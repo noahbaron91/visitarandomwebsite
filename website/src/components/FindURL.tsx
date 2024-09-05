@@ -318,7 +318,7 @@ function DesktopScrollAnimation({
           />
           <div
             ref={wheelRef}
-            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative md:max-w-[350px] lg:max-w-[500px]'
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative md:max-w-[350px] xl:max-w-[500px]'
           >
             {Array.from({ length: 250 }).map((_, index) => (
               <TextWheelElement
@@ -327,7 +327,7 @@ function DesktopScrollAnimation({
               />
             ))}
             <div className='flex flex-col w-full gap-4' ref={targetRef}>
-              <p className='text-4xl pointer-events-none select-none'>
+              <p className='overflow-ellipsis text-nowrap overflow-clip text-4xl pointer-events-none select-none'>
                 {domain}
               </p>
             </div>
@@ -591,16 +591,3 @@ function ScrollAnimation({ onReroll }: { onReroll: () => void }) {
 
   return <MobileScrollAnimation url={url} onReroll={onReroll} />;
 }
-
-// min-width: 0px;
-
-// parent:
-// max-width: 500px;
-// overflow: hidden
-
-/*
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-    overflow: clip;
-
-*/

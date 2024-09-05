@@ -11,7 +11,6 @@ import {
   useIsHoveringButton,
 } from '../context/IsHoveringButton';
 import { Flip } from 'gsap/Flip';
-import type { LineLoop } from 'three';
 
 function CTASection() {
   const { setIsHoveringButton } = useIsHoveringButton();
@@ -46,7 +45,7 @@ function CTASection() {
       >
         Visit a random website
       </button>
-      <p className='text-gray-400 select-none'>over 2,740,000 pages indexed</p>
+      <p className='text-gray-400 select-none'>over 2,670,000 pages indexed</p>
     </div>
   );
 }
