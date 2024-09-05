@@ -23,7 +23,7 @@ const requestQueue = await RequestQueue.open();
 console.log('Preparing statement');
 const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
 
-const socialMediaDomains = [
+const blockedWebsites = [
   'facebook.com',
   'twitter.com',
   'linkedin.com',
@@ -36,10 +36,19 @@ const socialMediaDomains = [
   'x.com',
   'threads.net',
   'bsky.app',
+  'amazon',
+  'audible',
+  'wikipedia',
   'pinterest.com',
+  'wikimedia',
+  'wiktionary',
+  'stripe.com',
+  'dan.com',
+  'github.com',
+  'github.com',
+  'archive.org',
 ];
 
-// Block any adult content
 const blockedWords = [
   'casino',
   'gambling',
@@ -51,6 +60,15 @@ const blockedWords = [
   'xxx',
   'adult',
   'nude',
+  'share',
+  '.rdf',
+  '.mp3',
+  '.png',
+  '.jpg',
+  '.webp',
+  '.avif',
+  '.svg',
+  // .mp4 kept on purpose since they're quite fun to stumble upon
 ];
 
 function isValidUrl(url: string) {
@@ -58,7 +76,6 @@ function isValidUrl(url: string) {
     new URL(url);
     return true;
   } catch (_) {
-    // console.log('invalid URL:', url);
     return false;
   }
 }
@@ -82,7 +99,7 @@ const crawler = new CheerioCrawler({
 
     const safeLinks = links.filter((link) => {
       return (
-        !socialMediaDomains.some((domain) => link.includes(domain)) &&
+        !blockedWebsites.some((domain) => link.includes(domain)) &&
         !blockedWords.some((word) => link.includes(word))
       );
     });
