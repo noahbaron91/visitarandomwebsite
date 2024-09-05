@@ -308,11 +308,11 @@ function DesktopScrollAnimation({
           />
           <div
             ref={wheelRef}
-            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative'
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative max-w-[500px]'
           >
             {Array.from({ length: 250 }).map((_, index) => (
               <TextWheelElement
-                className='text-4xl pointer-events-none select-none'
+                className='text-4xl overflow-ellipsis text-nowrap overflow-clip  pointer-events-none select-none'
                 key={index}
               />
             ))}
@@ -323,7 +323,7 @@ function DesktopScrollAnimation({
             </div>
             {Array.from({ length: 25 }).map((_, index) => (
               <TextWheelElement
-                className='text-4xl pointer-events-none select-none'
+                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none'
                 key={index}
               />
             ))}
@@ -496,7 +496,7 @@ function MobileScrollAnimation({ url, onReroll }: Props) {
               >
                 <p
                   id='target-domain'
-                  className='text-3xl text-ellipsis overflow-clip'
+                  className='text-3xl text-ellipsis overflow-clip text-nowrap'
                 >
                   {domain}
                 </p>
@@ -581,3 +581,16 @@ export function FindURL() {
 
   return <MobileScrollAnimation key={key} url={url} onReroll={handleReroll} />;
 }
+
+// min-width: 0px;
+
+// parent:
+// max-width: 500px;
+// overflow: hidden
+
+/*
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: clip;
+
+*/

@@ -32,6 +32,9 @@ body {
 
 .url {
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @keyframes fadeIn {
