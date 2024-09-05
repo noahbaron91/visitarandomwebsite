@@ -25,8 +25,6 @@ export function ScrollAnimation({ onReroll }: { onReroll: () => void }) {
     );
   }
 
-  console.log({ url });
-
   if (windowWidth > 968) {
     return <DesktopScrollAnimation url={url} onReroll={onReroll} />;
   }

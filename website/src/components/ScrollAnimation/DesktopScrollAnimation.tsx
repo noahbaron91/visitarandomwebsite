@@ -1,12 +1,52 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as i from '../Icons';
 import { TextWheelElement } from './TextWheelElement';
 import { VisitWebsiteWarning } from '../VisitWebsiteWarning';
 import gsap from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { CustomEase } from 'gsap/all';
+import { fadeInAnimation, scrollWheelAnimation } from '../../animations';
+import { calculateScrollToPosition } from '../../utils';
 
 gsap.registerPlugin(ScrollToPlugin, CustomEase);
+
+const hideSearchingLinksTextAnimation = (
+  searchingLinksText: HTMLHeadingElement
+) => {
+  const promise = new Promise((resolve) => {
+    gsap.to(searchingLinksText, {
+      opacity: 0,
+      delay: 0.25,
+      duration: 1,
+      onComplete: (cb) => {
+        searchingLinksText.style.display = 'none';
+        resolve(cb);
+      },
+    });
+  });
+
+  return promise;
+};
+
+const highlightTextAnimation = (target: HTMLDivElement) => {
+  gsap.to(target, {
+    color: '#C580FC',
+    duration: 1,
+  });
+};
+
+const fadeInFoundLinkAnimation = () => {
+  const elements = document.querySelectorAll('.found-link');
+
+  elements.forEach((element) => {
+    element.classList.remove('found-link');
+  });
+
+  gsap.to(elements, {
+    opacity: 1,
+    duration: 1,
+  });
+};
 
 export function DesktopScrollAnimation({
   onReroll,
@@ -22,93 +62,74 @@ export function DesktopScrollAnimation({
   const targetRef = useRef<HTMLDivElement>(null);
 
   const wheelRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const searchingLinksTextRef = useRef<HTMLHeadingElement>(null);
+
+  const hasAnimationStarted = useRef(false);
+
+  const animate = useCallback(async () => {
+    if (hasAnimationStarted.current) return;
+
+    const wheel = wheelRef.current;
+    const searchingLinksText = searchingLinksTextRef.current;
+    const target = targetRef.current;
+    const wrapper = wrapperRef.current;
+
+    if (!searchingLinksText || !wheel || !target || !wrapper) return;
+
+    hasAnimationStarted.current = true;
+
+    // Some animations we want to run in parallel so we don't have to wait for them to finish
+    fadeInAnimation(wrapper);
+
+    const scrollToPosition = calculateScrollToPosition(targetRef);
+    await scrollWheelAnimation(wheel, scrollToPosition);
+
+    highlightTextAnimation(target);
+
+    await hideSearchingLinksTextAnimation(searchingLinksText);
+
+    fadeInFoundLinkAnimation();
+  }, [
+    targetRef.current,
+    wheelRef.current,
+    searchingLinksTextRef.current,
+    wrapperRef.current,
+    hasAnimationStarted.current,
+  ]);
 
   useEffect(() => {
-    gsap.to('#wrapper', {
-      opacity: 1,
-      duration: 1,
-    });
-
-    if (!wheelRef.current || !targetRef.current) return;
-
-    const tickerMarker = document.getElementById('ticker-marker');
-    const tickerWrapper = document.getElementById('ticker-wrapper');
-
-    if (tickerMarker === null || tickerWrapper === null) return;
-
-    const tickerMarkerTop = tickerMarker.getBoundingClientRect().top;
-    const tickerWrapperTop = tickerWrapper.getBoundingClientRect().top;
-
-    const topPositionDifference = tickerMarkerTop - tickerWrapperTop;
-
-    const scrollToPosition =
-      targetRef.current.offsetTop - topPositionDifference;
-
-    gsap.to(wheelRef.current, {
-      scrollTo: scrollToPosition,
-      duration: 10,
-      ease: CustomEase.create(
-        'custom',
-        'M0,0 C0.126,0.382 0.168,0.674 0.326,0.822 0.518,1.002 0.95,1.005 1,1'
-      ),
-      delay: 0,
-      onComplete: () => {
-        gsap.to(targetRef.current, {
-          color: '#C580FC',
-          duration: 1,
-        });
-
-        const searchingLinksText = document.getElementById('searching-links');
-        if (!searchingLinksText) return;
-
-        gsap.to(searchingLinksText, {
-          opacity: 0,
-          delay: 0.25,
-          duration: 1,
-          onComplete: () => {
-            searchingLinksText.style.display = 'none';
-            const elements = document.querySelectorAll('.found-link');
-            elements.forEach((element) => {
-              element.classList.remove('found-link');
-            });
-            gsap.to(elements, {
-              opacity: 1,
-              duration: 1,
-            });
-          },
-        });
-      },
-    });
-  }, [targetRef.current, wheelRef.current]);
+    animate();
+  }, [animate]);
 
   const handleReroll = () => {
-    gsap.to('#wrapper', {
+    gsap.to(wrapperRef.current, {
       opacity: 0,
       duration: 1,
-      onComplete: () => {
-        onReroll();
-      },
+      onComplete: onReroll,
     });
   };
 
+  const wheelBackgroundStyle = useMemo(
+    () => ({
+      background:
+        'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
+    }),
+    []
+  );
+
   return (
     <div
-      id='wrapper'
+      ref={wrapperRef}
       className='opacity-0 flex w-screen justify-center gap-5 xl:gap-28 fixed top-1/2 -translate-y-1/2'
     >
-      <div
-        id='text-wrapper'
-        className='flex items-left gap-6 w-[480px] justify-center flex-col'
-      >
-        <h1 id='searching-links' className='text-5xl'>
+      <div className='flex items-left gap-6 w-[480px] justify-center flex-col'>
+        <h1 ref={searchingLinksTextRef} className='text-5xl'>
           Searching links...
         </h1>
         <div className='flex flex-col gap-2 found-link opacity-0'>
           <h1 className='text-4xl'>Found the perfect link</h1>
-          <p
-            className='text-2xl text-ellipsis overflow-clip text-nowrap'
-            style={{ color: '#A8A29E' }}
-          >
+          <p className='text-2xl text-[#A8A29E] text-ellipsis overflow-clip text-nowrap'>
             {urlWithoutProtocol}
           </p>
         </div>
@@ -133,10 +154,7 @@ export function DesktopScrollAnimation({
           <div
             className='fade-out absolute top-0 pointer-events-none left-0 right-0 bottom-0 z-10'
             id='ticker-wrapper'
-            style={{
-              background:
-                'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
-            }}
+            style={wheelBackgroundStyle}
           />
           <div
             ref={wheelRef}

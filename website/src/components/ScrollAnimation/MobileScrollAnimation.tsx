@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
-import { CustomEase } from 'gsap/all';
 import {
-  calculateSrcollToPosition,
+  calculateScrollToPosition,
   generateRandomNumber,
   getRandomArrayElement,
 } from '../../utils';
@@ -11,10 +9,32 @@ import { SEARCHING_TEXT } from '../../constants';
 import { TextWheelElement } from './TextWheelElement';
 import { VisitWebsiteWarning } from '../VisitWebsiteWarning';
 import * as i from '../Icons';
+import {
+  fadeInAnimation,
+  moveDomainAnimation,
+  scrollWheelAnimation,
+} from '../../animations';
 
 type Props = {
   url: string;
   onReroll: () => void;
+};
+
+const expandURLAnimation = (domain: HTMLParagraphElement, url: string) => {
+  gsap.to(domain, {
+    text: url,
+    ease: 'power1.inOut',
+    duration: 1,
+  });
+};
+
+const fadeOutWheelAnimation = () => {
+  gsap.to('.fade-out', {
+    opacity: 0,
+    delay: 0.25,
+    duration: 1,
+    ease: 'expo.out',
+  });
 };
 
 export function MobileScrollAnimation({ url, onReroll }: Props) {
@@ -22,79 +42,66 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
   const urlWithoutProtocol = urlWithoutWWW.replace(/(^\w+:|^)\/\//, '');
   const domain = urlWithoutProtocol.split('/')[0];
 
-  const ref = useRef<HTMLDivElement>(null);
-  const targetRef = useRef<HTMLParagraphElement>(null);
-
   const [searchText] = useState(getRandomArrayElement(SEARCHING_TEXT));
   const [randomNumberOfTextElements] = useState(generateRandomNumber(250, 300));
 
+  const wheelRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLParagraphElement>(null);
+  const actionButtonsRef = useRef<HTMLDivElement>(null);
+  const domainRef = useRef<HTMLParagraphElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const hasAnimationStarted = useRef(false);
+
+  const animation = useCallback(async () => {
+    if (hasAnimationStarted.current) return;
+
+    const wrapper = wrapperRef.current;
+    const domain = domainRef.current;
+    const wheel = wheelRef.current;
+    const target = targetRef.current;
+    const actionButtons = actionButtonsRef.current;
+
+    if (!wrapper || !domain || !wheel || !target || !actionButtons) return;
+
+    hasAnimationStarted.current = true;
+
+    fadeInAnimation(wrapper);
+
+    const scrollToPosition = calculateScrollToPosition(targetRef);
+    await scrollWheelAnimation(wheelRef.current, scrollToPosition);
+
+    fadeOutWheelAnimation();
+
+    setTimeout(async () => {
+      await moveDomainAnimation(target);
+      expandURLAnimation(domain, url);
+    }, 1250);
+
+    setTimeout(() => {
+      actionButtons.style.display = 'flex';
+
+      gsap.to(actionButtons, {
+        opacity: 1.5,
+        duration: 1,
+        ease: 'power1.inOut',
+      });
+    }, 1250 + 750);
+  }, [
+    wheelRef.current,
+    targetRef.current,
+    actionButtonsRef.current,
+    domainRef.current,
+    wrapperRef.current,
+    hasAnimationStarted.current,
+  ]);
+
   useEffect(() => {
-    if (!ref.current || !targetRef.current) return;
-
-    gsap.to('#wrapper', {
-      opacity: 1,
-      duration: 1,
-    });
-
-    const scrollToPosition = calculateSrcollToPosition(targetRef);
-
-    gsap.to(ref.current, {
-      scrollTo: scrollToPosition,
-      duration: 10,
-      ease: CustomEase.create(
-        'custom',
-        'M0,0 C0.126,0.382 0.168,0.674 0.326,0.822 0.518,1.002 0.95,1.005 1,1'
-      ),
-      delay: 0,
-      onComplete: () => {
-        const textElement = document.getElementById('target-domain');
-
-        gsap.to('.fade-out', {
-          opacity: 0,
-          delay: 0.25,
-          duration: 1,
-          ease: 'expo.out',
-        });
-
-        setTimeout(() => {
-          if (targetRef.current && ref.current) {
-            const state = Flip.getState(targetRef.current);
-            targetRef.current.style.left = '36px';
-            targetRef.current.style.right = '0px';
-            targetRef.current.style.top = '64px';
-            targetRef.current.style.paddingRight = '36px';
-            targetRef.current.style.position = 'fixed';
-
-            Flip.from(state, {
-              duration: 1,
-              ease: 'power1.out',
-              onComplete: () => {
-                gsap.to(textElement, {
-                  text: urlWithoutProtocol,
-                  ease: 'power1.inOut',
-                  duration: 1,
-                });
-              },
-            });
-          }
-        }, 1250);
-
-        setTimeout(() => {
-          document.querySelectorAll('.fade-in').forEach((element) => {
-            (element as HTMLDivElement).style.display = 'flex';
-          });
-          gsap.to('.fade-in', {
-            opacity: 1.5,
-            duration: 1,
-            ease: 'power1.inOut',
-          });
-        }, 1250 + 750);
-      },
-    });
-  }, [ref.current, targetRef.current]);
+    animation();
+  }, [animation]);
 
   const handleReroll = () => {
-    gsap.to('#wrapper', {
+    gsap.to(wrapperRef.current, {
       opacity: 0,
       duration: 1,
       onComplete: () => {
@@ -103,10 +110,18 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
     });
   };
 
+  const backgroundCarouselStyle: React.CSSProperties = useMemo(
+    () => ({
+      background:
+        'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
+    }),
+    []
+  );
+
   return (
     <>
       <div
-        id='wrapper'
+        ref={wrapperRef}
         className='fixed opacity-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 w-full'
       >
         <h3 className='fade-out text-3xl text-white mx-8 font-bold text-center z-10'>
@@ -123,13 +138,10 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
             <div
               className='fade-out absolute top-0 pointer-events-none left-0 right-0 bottom-0 z-10'
               id='ticker-wrapper'
-              style={{
-                background:
-                  'linear-gradient(black, transparent 25%), linear-gradient(0deg, black, transparent 25%)',
-              }}
+              style={backgroundCarouselStyle}
             />
             <div
-              ref={ref}
+              ref={wheelRef}
               className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[280px]'
             >
               {Array.from({ length: randomNumberOfTextElements }).map(
@@ -145,7 +157,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
                 ref={targetRef}
               >
                 <p
-                  id='target-domain'
+                  ref={domainRef}
                   className='text-3xl text-ellipsis overflow-clip text-nowrap'
                 >
                   {domain}
@@ -160,8 +172,10 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
             </div>
           </div>
         </div>
-
-        <div className='fixed top-[calc(64px_+_54px)] left-0 opacity-0 fade-in flex-col gap-2 w-full px-9'>
+        <div
+          ref={actionButtonsRef}
+          className='fixed top-[calc(64px_+_54px)] hidden left-0 opacity-0 flex-col gap-2 w-full px-9'
+        >
           <VisitWebsiteWarning
             url={url}
             className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'

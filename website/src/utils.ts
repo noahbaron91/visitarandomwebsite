@@ -9,7 +9,7 @@ export const getRandomArrayElement = (arr: string[]) => {
   return arr[index];
 };
 
-export const calculateSrcollToPosition = (
+export const calculateScrollToPosition = (
   linkRef: RefObject<HTMLParagraphElement | null>
 ): number => {
   if (!linkRef.current) return 0;
