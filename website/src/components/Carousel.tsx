@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { getRandomArrayElement } from './FindURL';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { PLACEHOLDER_DOMAINS } from '../constants';
+import { getRandomArrayElement } from '../utils';
 
 function CarouselItem() {
   const [domain] = useState(getRandomArrayElement(PLACEHOLDER_DOMAINS));
@@ -8,23 +8,9 @@ function CarouselItem() {
   return <p className='url'>{domain}</p>;
 }
 
-export function Carousel({ top }: { top: number }) {
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  const [left, setLeft] = useState(-(Math.random() * 1000));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLeft((prev) => prev - 0.15);
-    }, 0.12);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const style = useMemo(() => ({ top, left }), [top, left]);
-
-  // Add elements infinitely to the carousel
+const useAddCarouselItems = (
+  carouselRef: React.RefObject<HTMLDivElement | null>
+) => {
   useEffect(() => {
     const interval = setInterval(() => {
       const p = document.createElement('p');
@@ -37,6 +23,30 @@ export function Carousel({ top }: { top: number }) {
       clearInterval(interval);
     };
   }, []);
+};
+
+const useCarouselLeft = () => {
+  const [left, setLeft] = useState(-(Math.random() * 1000));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLeft((prev) => prev - 0.15);
+    }, 0.12);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  return left;
+};
+
+export function Carousel({ top }: { top: number }) {
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const left = useCarouselLeft();
+  const style = useMemo(() => ({ top, left }), [top, left]);
+
+  useAddCarouselItems(carouselRef);
 
   return (
     <div
