@@ -318,7 +318,7 @@ function DesktopScrollAnimation({
           />
           <div
             ref={wheelRef}
-            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative md:max-w-[350px] lg:max-w-[500px]'
+            className='hide-scrollbar max-h-screen overflow-scroll flex text-lg gap-6 flex-col text-white relative md:max-w-[350px] xl:max-w-[500px]'
           >
             {Array.from({ length: 250 }).map((_, index) => (
               <TextWheelElement
