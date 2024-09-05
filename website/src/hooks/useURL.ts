@@ -2,12 +2,25 @@ import { useEffect, useState } from 'react';
 
 async function getURL() {
   try {
-    const page = await fetch('/api/v1/page');
-    const data = await page.json();
+    const result = await fetch('/api/v1/page');
+
+    if (!result.ok) {
+      throw new Error('Failed to fetch URL');
+    }
+
+    const data = await result.json();
     return data.url;
   } catch (error) {
-    // TODO: retry automatically
-    // wait 5 seconds
+    // Retry after 1 second
+    const oneSecondWait = new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+
+    await oneSecondWait;
+
+    return await getURL();
   }
 }
 
