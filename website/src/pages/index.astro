@@ -9,6 +9,21 @@ import { App } from '../components/App';
 
 <html lang='en'>
   <head>
+    <!-- Google Analytics -->
+    <script async src='https://www.googletagmanager.com/gtag/js?id=G-01R5C451W4'
+    ></script>
+    <script>
+      // @ts-ignore
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        // @ts-ignore
+        dataLayer.push(arguments);
+      }
+      // @ts-ignore
+      gtag('js', new Date());
+      // @ts-ignore
+      gtag('config', 'G-01R5C451W4');
+    </script>
     <meta charset='utf-8' />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <meta name='viewport' content='width=device-width' />
