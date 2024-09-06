@@ -75,7 +75,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
 
     setTimeout(async () => {
       await moveDomainAnimation(target);
-      expandURLAnimation(domain, url);
+      expandURLAnimation(domain, urlWithoutProtocol);
     }, 1250);
 
     setTimeout(() => {
@@ -135,13 +135,13 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
             />
             <div
               ref={wheelRef}
-              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[280px]'
+              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[200px] min-[480px]:max-w-[280px] sm:max-w-[360px]'
             >
               {Array.from({ length: randomNumberOfTextElements }).map(
                 (_, index) => (
                   <TextWheelElement
                     key={index}
-                    className='fade-out text-3xl pointer-events-none select-none'
+                    className='fade-out text-3xl pointer-events-none select-none flex-shrink-0 overflow-x-hidden text-ellipsis'
                   />
                 )
               )}
@@ -151,34 +151,34 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
               >
                 <p
                   ref={domainRef}
-                  className='text-3xl text-ellipsis overflow-clip text-nowrap'
+                  className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-2 break-all'
                 >
                   {domain}
                 </p>
+                <div
+                  ref={actionButtonsRef}
+                  className='hidden left-0 opacity-0 flex-col gap-2 w-full'
+                >
+                  <VisitWebsiteWarning
+                    url={url}
+                    className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
+                  />
+                  <button
+                    onClick={handleReroll}
+                    className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
+                  >
+                    Reroll <i.Reroll />
+                  </button>
+                </div>
               </div>
               {Array.from({ length: 20 }).map((_, index) => (
                 <TextWheelElement
                   key={index}
-                  className='fade-out text-3xl pointer-events-none select-none'
+                  className='fade-out text-3xl pointer-events-none select-none flex-shrink-0 overflow-x-hidden text-ellipsis'
                 />
               ))}
             </div>
           </div>
-        </div>
-        <div
-          ref={actionButtonsRef}
-          className='fixed top-[calc(64px_+_54px)] hidden left-0 opacity-0 flex-col gap-2 w-full px-9'
-        >
-          <VisitWebsiteWarning
-            url={url}
-            className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
-          />
-          <button
-            onClick={handleReroll}
-            className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
-          >
-            Reroll <i.Reroll />
-          </button>
         </div>
       </div>
     </>

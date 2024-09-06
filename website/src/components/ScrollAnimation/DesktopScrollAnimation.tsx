@@ -123,7 +123,7 @@ export function DesktopScrollAnimation({
         </h1>
         <div className='flex flex-col gap-2 found-link opacity-0'>
           <h1 className='text-4xl'>Found the perfect link</h1>
-          <p className='text-2xl text-[#A8A29E] text-ellipsis overflow-clip text-nowrap'>
+          <p className='text-2xl text-[#A8A29E] text-ellipsis overflow-clip text-wrap line-clamp-2 break-all'>
             {urlWithoutProtocol}
           </p>
         </div>
