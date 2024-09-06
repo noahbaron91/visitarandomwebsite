@@ -21,6 +21,8 @@ type Props = {
 };
 
 const expandURLAnimation = (domain: HTMLParagraphElement, url: string) => {
+  domain.style.webkitLineClamp = '3';
+
   gsap.to(domain, {
     text: url,
     ease: 'power1.inOut',
@@ -151,7 +153,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
               >
                 <p
                   ref={domainRef}
-                  className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-2 break-all'
+                  className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-1 break-all'
                 >
                   {domain}
                 </p>
