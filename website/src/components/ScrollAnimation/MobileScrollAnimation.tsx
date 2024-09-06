@@ -151,10 +151,25 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
               >
                 <p
                   ref={domainRef}
-                  className='text-3xl text-ellipsis overflow-clip text-nowrap'
+                  className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-2 break-all'
                 >
                   {domain}
                 </p>
+                <div
+                  ref={actionButtonsRef}
+                  className='hidden left-0 opacity-0 flex-col gap-2 w-full'
+                >
+                  <VisitWebsiteWarning
+                    url={url}
+                    className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
+                  />
+                  <button
+                    onClick={handleReroll}
+                    className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
+                  >
+                    Reroll <i.Reroll />
+                  </button>
+                </div>
               </div>
               {Array.from({ length: 20 }).map((_, index) => (
                 <TextWheelElement
@@ -164,21 +179,6 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
               ))}
             </div>
           </div>
-        </div>
-        <div
-          ref={actionButtonsRef}
-          className='fixed top-[calc(64px_+_54px)] hidden left-0 opacity-0 flex-col gap-2 w-full px-9'
-        >
-          <VisitWebsiteWarning
-            url={url}
-            className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
-          />
-          <button
-            onClick={handleReroll}
-            className='flex w-full border bg-gray-900 text-lg border-gray-700 rounded px-6 py-3 justify-between items-center'
-          >
-            Reroll <i.Reroll />
-          </button>
         </div>
       </div>
     </>
