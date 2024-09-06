@@ -90,13 +90,7 @@ export function DesktopScrollAnimation({
     await hideSearchingLinksTextAnimation(searchingLinksText);
 
     fadeInFoundLinkAnimation();
-  }, [
-    targetRef.current,
-    wheelRef.current,
-    searchingLinksTextRef.current,
-    wrapperRef.current,
-    hasAnimationStarted.current,
-  ]);
+  }, []);
 
   useEffect(() => {
     animate();

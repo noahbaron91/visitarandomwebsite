@@ -87,14 +87,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
         ease: 'power1.inOut',
       });
     }, 1250 + 750);
-  }, [
-    wheelRef.current,
-    targetRef.current,
-    actionButtonsRef.current,
-    domainRef.current,
-    wrapperRef.current,
-    hasAnimationStarted.current,
-  ]);
+  }, []);
 
   useEffect(() => {
     animation();
