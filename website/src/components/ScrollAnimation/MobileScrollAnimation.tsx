@@ -21,7 +21,7 @@ type Props = {
 };
 
 const expandURLAnimation = (domain: HTMLParagraphElement, url: string) => {
-  domain.style.webkitLineClamp = '3';
+  domain.style.webkitLineClamp = '5';
 
   gsap.to(domain, {
     text: url,
