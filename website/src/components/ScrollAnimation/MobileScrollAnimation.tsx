@@ -75,7 +75,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
 
     setTimeout(async () => {
       await moveDomainAnimation(target);
-      expandURLAnimation(domain, url);
+      expandURLAnimation(domain, urlWithoutProtocol);
     }, 1250);
 
     setTimeout(() => {
@@ -135,13 +135,13 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
             />
             <div
               ref={wheelRef}
-              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[280px]'
+              className='hide-scrollbar max-h-96 overflow-scroll flex text-lg gap-3 flex-col text-white relative max-w-[200px] min-[480px]:max-w-[280px] sm:max-w-[360px]'
             >
               {Array.from({ length: randomNumberOfTextElements }).map(
                 (_, index) => (
                   <TextWheelElement
                     key={index}
-                    className='fade-out text-3xl pointer-events-none select-none'
+                    className='fade-out text-3xl pointer-events-none select-none flex-shrink-0 overflow-x-hidden text-ellipsis'
                   />
                 )
               )}
@@ -159,7 +159,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
               {Array.from({ length: 20 }).map((_, index) => (
                 <TextWheelElement
                   key={index}
-                  className='fade-out text-3xl pointer-events-none select-none'
+                  className='fade-out text-3xl pointer-events-none select-none flex-shrink-0 overflow-x-hidden text-ellipsis'
                 />
               ))}
             </div>

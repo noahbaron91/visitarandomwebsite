@@ -53,10 +53,7 @@ export function HomePage() {
           <div className='w-full fixed pointer-events-none z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-balance flex flex-col items-center gap-9 px-6'>
             <div className='select-none text-3xl lg:text-4xl font-bold flex lg:w-[950px] md:w-[850px] flex-col text-center gap-6 '>
               <h1>96.55% of pages receive no organic search traffic</h1>
-              <h1>
-                Visit a random website on the internet and discover something
-                new
-              </h1>
+              <h1>Visit a random website and discover something new</h1>
             </div>
             <CTASection />
           </div>
