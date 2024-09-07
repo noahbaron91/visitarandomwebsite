@@ -1,5 +1,4 @@
 export const PLACEHOLDER_DOMAINS = [
-  'en.wikipedia.com',
   'doi.org',
   'clausweb.ro',
   'moovmor.com',
@@ -153,7 +152,6 @@ export const PLACEHOLDER_DOMAINS = [
   'daytondiggers.com',
   'ncfclub.org',
   'odametaldetecting.com',
-  'tamararay.com/hamburger-soup-with-cabbage-and-potatoes',
   'vallenallergyasthma.com',
   'landscapingnorthvancouver.ca',
   'pooltableservicerichmond.com',
