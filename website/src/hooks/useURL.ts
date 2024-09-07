@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useVisitedDomains } from '../context/VisitedDomains';
 
-async function getURL() {
+async function getURL(visitedDomains: string[]) {
   try {
-    const result = await fetch('/api/v1/page');
+    const result = await fetch('/api/v1/page', {
+      method: 'PUT',
+      body: JSON.stringify({ visitedDomains }),
+    });
 
     if (!result.ok) {
       throw new Error('Failed to fetch URL');
@@ -20,18 +24,41 @@ async function getURL() {
 
     await oneSecondWait;
 
-    return await getURL();
+    return await getURL(visitedDomains);
   }
 }
 
+const getURLHostName = (url: string): string | null => {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+};
+
 export const useURL = () => {
   const [url, setURL] = useState<null | string>(null);
+  const { addVisitedDomain, visitedDomains } = useVisitedDomains();
+
+  const hasRequestedURL = useRef(false);
 
   useEffect(() => {
-    getURL().then((url) => {
+    if (hasRequestedURL.current) return;
+
+    hasRequestedURL.current = true;
+
+    getURL(visitedDomains).then((url) => {
       setURL(url);
+
+      if (url) {
+        const hostname = getURLHostName(url);
+
+        if (!hostname) return;
+
+        addVisitedDomain(hostname);
+      }
     });
-  }, []);
+  }, [visitedDomains]);
 
   return url;
 };

@@ -1,4 +1,12 @@
-import type { APIRoute } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
+
+const isValid = (visitedDomains: string[], url: string) => {
+  if (!isValidURLPattern(url)) return false;
+
+  const hasAlreadyVisited = visitedDomains.includes(new URL(url).hostname);
+
+  return !hasAlreadyVisited;
+};
 
 const isValidURLPattern = (url: string) => {
   try {
@@ -23,12 +31,18 @@ const getURL = async (db: any, numberOfRows: number) => {
   return result.url;
 };
 
-const getValidURL = async (db: any, numberOfRows: number) => {
+const MAX_TRIES = 150;
+
+const getValidURL = async (
+  db: any,
+  numberOfRows: number,
+  visitedDomains: string[]
+) => {
   let url = await getURL(db, numberOfRows);
 
   let tries = 0;
 
-  while (!isValidURLPattern(url) && tries < 10) {
+  while (!isValid(visitedDomains, url) && tries < MAX_TRIES) {
     try {
       url = await getURL(db, numberOfRows);
 
@@ -38,19 +52,51 @@ const getValidURL = async (db: any, numberOfRows: number) => {
     }
   }
 
-  if (tries >= 10) {
+  if (tries >= MAX_TRIES) {
     return null;
   }
 
   return url;
 };
 
-export const GET: APIRoute = async (ctx) => {
+const getBody = async (ctx: APIContext) => {
+  try {
+    return await ctx.request.json();
+  } catch {
+    return null;
+  }
+};
+
+export const PUT: APIRoute = async (ctx) => {
+  const body = await getBody(ctx);
+
+  if (!body) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: 'Failed to parse body',
+      }),
+      { status: 400 }
+    );
+  }
+
+  const visitedDomains = body.visitedDomains as string[] | undefined;
+
+  if (!visitedDomains || typeof visitedDomains !== 'object') {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: 'Missing visitedDomains in body',
+      }),
+      { status: 400 }
+    );
+  }
+
   const NUMBER_OF_ROWS = Number(ctx.locals.runtime.env.NUMBER_OF_ROWS) ?? 1;
 
   const db = ctx.locals.runtime.env.DB;
 
-  const validURL = await getValidURL(db, NUMBER_OF_ROWS);
+  const validURL = await getValidURL(db, NUMBER_OF_ROWS, visitedDomains);
 
   if (!validURL) {
     return new Response(

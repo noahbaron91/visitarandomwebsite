@@ -6,6 +6,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { PageContextProvider, usePageContext } from '../context/PageContext';
 import { Flip } from 'gsap/Flip';
 import { HomePage } from './HomePage';
+import { VisitedDomainsProvider } from '../context/VisitedDomains';
 
 function Router() {
   const { page } = usePageContext();
@@ -22,10 +23,12 @@ function Router() {
 
 export function App() {
   return (
-    <PageContextProvider>
-      <Router />
-      <Footer />
-    </PageContextProvider>
+    <VisitedDomainsProvider>
+      <PageContextProvider>
+        <Router />
+        <Footer />
+      </PageContextProvider>
+    </VisitedDomainsProvider>
   );
 }
 
