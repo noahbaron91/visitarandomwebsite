@@ -38,7 +38,7 @@ export const scrollWheelAnimation = (
   const promise = new Promise((resolve) => {
     gsap.to(wheel, {
       scrollTo: scrollToPosition,
-      duration: 10,
+      duration: 5,
       ease: CustomEase.create(
         'custom',
         'M0,0 C0.126,0.382 0.168,0.674 0.326,0.822 0.518,1.002 0.95,1.005 1,1'
