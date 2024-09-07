@@ -11,6 +11,7 @@ import { VisitWebsiteWarning } from '../VisitWebsiteWarning';
 import * as i from '../Icons';
 import {
   fadeInAnimation,
+  fadeInButtonsAnimation,
   moveDomainAnimation,
   scrollWheelAnimation,
 } from '../../animations';
@@ -31,7 +32,9 @@ const expandURLAnimation = ({
 }) => {
   domainEl.style.webkitLineClamp = '5';
 
-  const restOfURL = urlWithoutProtocol
+  const restOfURLWithoutQueryParams = urlWithoutProtocol.split('?')[0];
+
+  const restOfURL = restOfURLWithoutQueryParams
     .split('/')
     .filter((_, index) => index !== 0)
     .join('/');
@@ -112,17 +115,9 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
         restOfURLEl: restOfURL,
         urlWithoutProtocol,
       });
+
+      fadeInButtonsAnimation(actionButtons);
     }, 1250);
-
-    setTimeout(() => {
-      actionButtons.style.display = 'flex';
-
-      gsap.to(actionButtons, {
-        opacity: 1.5,
-        duration: 1,
-        ease: 'power1.inOut',
-      });
-    }, 1250 + 750);
   }, []);
 
   useEffect(() => {
@@ -189,7 +184,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
                   ref={domainRef}
                   className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-1 break-all'
                 >
-                  {domain}
+                  <span>{domain}</span>
                   <span ref={restOfURLRef}></span>
                 </p>
                 <div

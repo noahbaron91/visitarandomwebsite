@@ -21,6 +21,16 @@ export const moveDomainAnimation = (target: HTMLDivElement) => {
   return promise;
 };
 
+export const fadeInButtonsAnimation = (actionButtons: HTMLDivElement) => {
+  actionButtons.style.display = 'flex';
+
+  gsap.to(actionButtons, {
+    opacity: 1.5,
+    duration: 1,
+    ease: 'power1.inOut',
+  });
+};
+
 export const scrollWheelAnimation = (
   wheel: HTMLDivElement,
   scrollToPosition: number

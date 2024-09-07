@@ -156,7 +156,7 @@ export function DesktopScrollAnimation({
           >
             {Array.from({ length: 250 }).map((_, index) => (
               <TextWheelElement
-                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none'
+                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none flex-shrink-0'
                 key={index}
               />
             ))}
@@ -167,7 +167,7 @@ export function DesktopScrollAnimation({
             </div>
             {Array.from({ length: 25 }).map((_, index) => (
               <TextWheelElement
-                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none'
+                className='text-4xl overflow-ellipsis text-nowrap overflow-clip pointer-events-none select-none flex-shrink-0'
                 key={index}
               />
             ))}
