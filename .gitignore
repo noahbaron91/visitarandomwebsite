@@ -1,2 +1,4 @@
 .DS_Store
 sql/data.sql
+backup
+crawl.db*
