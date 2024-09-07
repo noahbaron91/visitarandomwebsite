@@ -47,6 +47,8 @@ const blockedWebsites = [
   'github.com',
   'github.com',
   'archive.org',
+  'ebay.com',
+  'booking.com',
 ];
 
 const blockedWords = [

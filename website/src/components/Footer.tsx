@@ -36,7 +36,7 @@ export function Footer() {
                 </a>
               </p>
               <p>
-                If you want to fund my future ideas or show your appreciation
+                If you want to fund my future projects or show your appreciation
                 for my work{' '}
                 <a
                   href='https://buymeacoffee.com/noahbaron'
