@@ -75,8 +75,8 @@ const blockedWords = [
 
 function isValidUrl(url: string) {
   try {
-    new URL(url);
-    return true;
+    const newUrl = new URL(url);
+    return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
   } catch (_) {
     return false;
   }
