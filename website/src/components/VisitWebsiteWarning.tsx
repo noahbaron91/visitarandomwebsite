@@ -81,7 +81,7 @@ export function VisitWebsiteWarning({ url, className }: Props) {
           </div>
           <div className='flex flex-col gap-2 xl:mt-2 xl:flex-row-reverse'>
             <button
-              className='bg-[#8500EF] rounded border py-3 border-[#BF6FFE] xl:flex-1'
+              className='bg-secondary rounded border py-3 border-[#BF6FFE] xl:flex-1'
               onClick={handleContinue}
             >
               Continue

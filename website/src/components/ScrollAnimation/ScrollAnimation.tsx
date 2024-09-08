@@ -3,6 +3,7 @@ import { DesktopScrollAnimation } from './DesktopScrollAnimation';
 import { MobileScrollAnimation } from './MobileScrollAnimation';
 import { useURL } from '../../hooks/useURL';
 import { Spinner } from '../Spinner';
+import { useInstantModeEnabled } from '../../context/InstantModeEnabledContext';
 
 export function ScrollAnimation({ onReroll }: { onReroll: () => void }) {
   const url = useURL();

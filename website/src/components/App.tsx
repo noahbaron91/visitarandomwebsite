@@ -7,6 +7,8 @@ import { PageContextProvider, usePageContext } from '../context/PageContext';
 import { Flip } from 'gsap/Flip';
 import { HomePage } from './HomePage';
 import { VisitedDomainsProvider } from '../context/VisitedDomains';
+import { InstantModeEnabledProvider } from '../context/InstantModeEnabledContext';
+import { Instant } from './Instant';
 
 function Router() {
   const { page } = usePageContext();
@@ -18,17 +20,22 @@ function Router() {
     case 'find-url': {
       return <FindURL />;
     }
+    case 'instant': {
+      return <Instant />;
+    }
   }
 }
 
 export function App() {
   return (
-    <VisitedDomainsProvider>
-      <PageContextProvider>
-        <Router />
-        <Footer />
-      </PageContextProvider>
-    </VisitedDomainsProvider>
+    <InstantModeEnabledProvider>
+      <VisitedDomainsProvider>
+        <PageContextProvider>
+          <Router />
+          <Footer />
+        </PageContextProvider>
+      </VisitedDomainsProvider>
+    </InstantModeEnabledProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-type Page = 'home' | 'find-url';
+type Page = 'home' | 'find-url' | 'instant';
 
 const PageContext = createContext<{
   page: Page;
