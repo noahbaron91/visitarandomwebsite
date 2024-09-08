@@ -11,16 +11,16 @@ const stratingURL = config.startingURL;
 
 const db = new sqlite3.Database('crawler.db', (err) => {
   if (err) {
-    console.error('Error opening database', err);
-    return;
+    console.error(
+      'Error opening database. Make sure you have created a crawler.db sqlite database.',
+      err
+    );
+    process.exit(1);
   }
 
   console.log('Connected to the SQLite database.');
 });
 
-console.log('Opening request queue');
-const requestQueue = await RequestQueue.open();
-console.log('Preparing statement');
 const statement = db.prepare('INSERT OR IGNORE INTO page (url) VALUES (?)');
 
 const blockedWebsites = [
@@ -61,6 +61,8 @@ const blockedWords = [
   'porn',
   'xxx',
   'adult',
+  'naked',
+  'erotic',
   'nude',
   'share',
   '.rdf',
@@ -82,63 +84,166 @@ function isValidUrl(url: string) {
   }
 }
 
-const crawler = new CheerioCrawler({
-  requestQueue,
-  maxRequestRetries: 3,
-  errorHandler: (error) => {
-    console.error('Error:', error);
-  },
-  async requestHandler({ $, request }) {
-    console.log('Crawling:', request.loadedUrl);
+const getDomainFromURL = (url: string): string | null => {
+  try {
+    const urlObject = new URL(url);
 
-    const links = $('a[href]')
-      .map((_, el) => $(el).attr('href'))
-      .get()
-      .map((link) => {
-        return new URL(link, request.loadedUrl).href;
-      })
-      .filter(isValidUrl);
+    if (urlObject.protocol !== 'https:' && urlObject.protocol !== 'http:')
+      return null;
 
-    const safeLinks = links.filter((link) => {
-      return (
-        !blockedWebsites.some((domain) => link.includes(domain)) &&
-        !blockedWords.some((word) => link.includes(word))
-      );
-    });
+    return `${urlObject.protocol}//${urlObject.hostname}`;
+  } catch (error) {
+    return null;
+  }
+};
 
-    const externalLinks = safeLinks.filter(
-      (link: string) => !link.includes(startingDomain)
-    );
-
-    console.log('External links:', externalLinks.length);
-
-    externalLinks.forEach((link) => {
-      statement.run(link, (err) => {
+function checkIfDomainExists(domain: string) {
+  const promise = new Promise<{ exists: boolean; domain: string }>(
+    (resolve) => {
+      db.get('SELECT * FROM page WHERE url = ?', domain, (err, row) => {
         if (err) {
-          console.error('Error inserting link into SQLite:', err.message);
+          console.error('Error querying SQLite:', err);
+          resolve({ exists: false, domain });
         }
+
+        resolve({
+          exists: !!row,
+          domain,
+        });
       });
+    }
+  );
+
+  return promise;
+}
+
+const insertIntoDatabase = async (url: string) => {
+  const promise = new Promise<void>((resolve, reject) => {
+    db.run('INSERT INTO page (url) VALUES (?)', url, (err) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve();
     });
+  });
 
-    await crawler.addRequests(safeLinks);
-  },
-});
+  return promise;
+};
 
-console.log('Request queue len', requestQueue.getTotalCount());
+const getLast1kCrawledURLs = () => {
+  try {
+    const last1kCrawledURLs = fs
+      .readFileSync('crawled-urls.csv', 'utf8')
+      .split('\n')
+      .slice(-1000)
+      .filter((url) => url !== '');
 
-const isEmpty = process.env.CRAWLEE_PURGE_ON_START !== '0';
+    return last1kCrawledURLs;
+    // Will throw an error if crawled-urls.csv is empty
+  } catch {
+    return [];
+  }
+};
 
-console.log('isEmpty:', process.env.CRAWLEE_PURGE_ON_START);
+const crawlWebsites = async () => {
+  const requestQueue = await RequestQueue.open();
 
-if (isEmpty) {
-  console.log('Starting with seed URLs');
-  await crawler.run([stratingURL]);
-} else {
-  console.log('Resuming from the queue');
-  await crawler.run();
+  const crawler = new CheerioCrawler({
+    requestQueue,
+    maxRequestRetries: 3,
+    maxRequestsPerCrawl: 1000,
+    errorHandler: () => {},
+    async requestHandler({ $, request }) {
+      console.log('Crawling:', request.loadedUrl);
+
+      const links = $('a[href]')
+        .map((_, el) => $(el).attr('href'))
+        .get()
+        .map((link) => {
+          return new URL(link, request.loadedUrl).href;
+        })
+        .filter(isValidUrl);
+
+      const safeLinks = links.filter((link) => {
+        return (
+          !blockedWebsites.some((domain) => link.includes(domain)) &&
+          !blockedWords.some((word) => link.includes(word))
+        );
+      });
+
+      const externalLinks = safeLinks.filter(
+        (link: string) => !link.includes(startingDomain)
+      );
+
+      const externalLinkDomains = externalLinks
+        .map(getDomainFromURL)
+        .filter((domain) => !!domain) as string[];
+
+      const uniqueExternalLinkDomains = [...new Set(externalLinkDomains)];
+
+      const domainsExistPromises = uniqueExternalLinkDomains.map((link) =>
+        checkIfDomainExists(link)
+      );
+
+      const domainsExistResults = await Promise.all(domainsExistPromises);
+
+      const domainsThatDontExistsInDB = domainsExistResults
+        .filter((result) => !result.exists)
+        .map(({ domain }) => domain);
+
+      const rankingsCSV = fs.readFileSync('top-100k.csv', 'utf8').split('\n');
+
+      const domainsThatArentInTheTop100Thousand =
+        domainsThatDontExistsInDB.filter((domain) => {
+          // The domain includes the protocol so we need to check if the domain includes the line not the other way around
+          return !rankingsCSV.some((line) => {
+            const domainWithoutProtocol = domain.replace(/(^\w+:|^)\/\//, '');
+
+            return domainWithoutProtocol === line;
+          });
+        });
+
+      const insertPromises = domainsThatArentInTheTop100Thousand.map((domain) =>
+        insertIntoDatabase(domain)
+      );
+
+      await Promise.all(insertPromises);
+
+      const data = domainsThatArentInTheTop100Thousand
+        .map((domain, i) => (i === 0 ? `\n${domain}` : domain))
+        .join('\n');
+
+      fs.appendFileSync('crawled-urls.csv', data);
+
+      await crawler.addRequests(safeLinks);
+    },
+  });
+
+  const last1kCrawledURLs = getLast1kCrawledURLs();
+
+  fs.writeFileSync('crawled-urls.csv', '');
+
+  // It will have the length of 1 if the file is empty ('')
+  const initialSeedURLs =
+    last1kCrawledURLs.length > 1 ? last1kCrawledURLs : [stratingURL];
+
+  await crawler.run(initialSeedURLs);
+
+  await requestQueue.drop();
+
+  await crawlWebsites();
+};
+
+try {
+  await crawlWebsites();
+  console.log('Crawling finished');
+} catch (error) {
+  console.log('Crawling error:', error);
 }
 
 statement.finalize();
+
 db.close((err) => {
   if (err) {
     console.error('Error closing database', err);
