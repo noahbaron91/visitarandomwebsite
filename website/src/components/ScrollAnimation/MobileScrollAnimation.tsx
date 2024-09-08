@@ -21,37 +21,6 @@ type Props = {
   onReroll: () => void;
 };
 
-const expandURLAnimation = ({
-  domainEl,
-  restOfURLEl,
-  urlWithoutProtocol,
-}: {
-  domainEl: HTMLParagraphElement;
-  restOfURLEl: HTMLSpanElement;
-  urlWithoutProtocol: string;
-}) => {
-  domainEl.style.webkitLineClamp = '5';
-
-  const restOfURLWithoutQueryParams = urlWithoutProtocol.split('?')[0];
-
-  const restOfURL = restOfURLWithoutQueryParams
-    .split('/')
-    .filter((_, index) => index !== 0)
-    .join('/');
-
-  if (restOfURL.length === 0) {
-    return;
-  }
-
-  const restOfURLWithSlash = `/${restOfURL}`;
-
-  gsap.to(restOfURLEl, {
-    text: restOfURLWithSlash,
-    ease: 'power1.inOut',
-    duration: 1,
-  });
-};
-
 const fadeOutWheelAnimation = () => {
   gsap.to('.fade-out', {
     opacity: 0,
@@ -73,7 +42,6 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
   const targetRef = useRef<HTMLParagraphElement>(null);
   const actionButtonsRef = useRef<HTMLDivElement>(null);
   const domainRef = useRef<HTMLParagraphElement>(null);
-  const restOfURLRef = useRef<HTMLSpanElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const hasAnimationStarted = useRef(false);
@@ -86,17 +54,8 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
     const wheel = wheelRef.current;
     const target = targetRef.current;
     const actionButtons = actionButtonsRef.current;
-    const restOfURL = restOfURLRef.current;
 
-    if (
-      !wrapper ||
-      !domain ||
-      !wheel ||
-      !target ||
-      !actionButtons ||
-      !restOfURL
-    )
-      return;
+    if (!wrapper || !domain || !wheel || !target || !actionButtons) return;
 
     hasAnimationStarted.current = true;
 
@@ -109,12 +68,6 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
 
     setTimeout(async () => {
       await moveDomainAnimation(target);
-
-      expandURLAnimation({
-        domainEl: domain,
-        restOfURLEl: restOfURL,
-        urlWithoutProtocol,
-      });
 
       fadeInButtonsAnimation(actionButtons);
     }, 1250);
@@ -185,7 +138,6 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
                   className='text-3xl text-ellipsis overflow-clip text-wrap line-clamp-1 break-all'
                 >
                   <span>{domain}</span>
-                  <span ref={restOfURLRef}></span>
                 </p>
                 <div
                   ref={actionButtonsRef}
