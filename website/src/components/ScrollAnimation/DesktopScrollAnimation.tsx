@@ -130,7 +130,7 @@ export function DesktopScrollAnimation({
         <div className='flex flex-col gap-3 found-link opacity-0'>
           <VisitWebsiteWarning
             url={url}
-            className='text-lg rounded-lg justify-between items-center py-4 px-9 flex w-[450px] bg-[#8500EF] border border-[#BF6FFE] border-solid'
+            className='text-lg rounded-lg justify-between items-center py-4 px-9 flex w-[450px] bg-secondary border border-[#BF6FFE] border-solid'
           />
           <button
             onClick={handleReroll}

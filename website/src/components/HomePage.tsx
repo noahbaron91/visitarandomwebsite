@@ -6,12 +6,31 @@ import {
   IsHoveringButtonProvider,
   useIsHoveringButton,
 } from '../context/IsHoveringButtonContext';
+import { InstantMode } from './InstantMode';
+import { useURL } from '../hooks/useURL';
+import { useInstantModeEnabled } from '../context/InstantModeEnabledContext';
+
+const useRedirect = () => {
+  const url = useURL();
+
+  if (!url) {
+    return;
+  }
+
+  window.open(url, '_blank');
+};
 
 function CTASection() {
-  const { setIsHoveringButton } = useIsHoveringButton();
   const { setPage } = usePageContext();
+  const { setIsHoveringButton } = useIsHoveringButton();
+  const { isEnabled } = useInstantModeEnabled();
 
   const handleClick = () => {
+    if (isEnabled) {
+      setPage('instant');
+      return;
+    }
+
     gsap.to('.wrapper', {
       opacity: 0,
       duration: 1,
@@ -40,7 +59,7 @@ function CTASection() {
       >
         Visit a random website
       </button>
-      <p className='text-gray-400 select-none'>over 1,780,000 pages indexed</p>
+      {/* <p className='text-gray-400 select-none'>over 1,780,000 pages indexed</p> */}
     </div>
   );
 }
@@ -50,6 +69,7 @@ export function HomePage() {
     <div className='wrapper'>
       <IsHoveringButtonProvider>
         <SpotlightProvider>
+          <InstantMode />
           <div className='w-full fixed pointer-events-none z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-balance flex flex-col items-center gap-9 px-6'>
             <div className='select-none text-3xl lg:text-4xl font-bold flex lg:w-[950px] md:w-[850px] flex-col text-center gap-6 '>
               <h1>96.55% of pages receive no organic search traffic</h1>

@@ -145,7 +145,7 @@ export function MobileScrollAnimation({ url, onReroll }: Props) {
                 >
                   <VisitWebsiteWarning
                     url={url}
-                    className='flex px-6 bg-[#8500EF] text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
+                    className='flex px-6 bg-secondary text-lg border border-[#BF6FFE] py-3 rounded justify-between items-center'
                   />
                   <button
                     onClick={handleReroll}
