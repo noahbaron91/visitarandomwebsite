@@ -192,25 +192,26 @@ const crawlWebsites = async () => {
         .filter((result) => !result.exists)
         .map(({ domain }) => domain);
 
-      const rankingsCSV = fs.readFileSync('top-100k.csv', 'utf8').split('\n');
+      const rankingsCSV = fs.readFileSync('top-1m.csv', 'utf8').split('\n');
 
-      const domainsThatArentInTheTop100Thousand =
-        domainsThatDontExistsInDB.filter((domain) => {
+      const domainsThatArentInTheTopMillion = domainsThatDontExistsInDB.filter(
+        (domain) => {
           // The domain includes the protocol so we need to check if the domain includes the line not the other way around
           return !rankingsCSV.some((line) => {
             const domainWithoutProtocol = domain.replace(/(^\w+:|^)\/\//, '');
 
             return domainWithoutProtocol === line;
           });
-        });
+        }
+      );
 
-      const insertPromises = domainsThatArentInTheTop100Thousand.map((domain) =>
+      const insertPromises = domainsThatArentInTheTopMillion.map((domain) =>
         insertIntoDatabase(domain)
       );
 
       await Promise.all(insertPromises);
 
-      const data = domainsThatArentInTheTop100Thousand
+      const data = domainsThatArentInTheTopMillion
         .map((domain, i) => (i === 0 ? `\n${domain}` : domain))
         .join('\n');
 
